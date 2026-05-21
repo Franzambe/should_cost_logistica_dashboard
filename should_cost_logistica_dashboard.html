@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Should Cost Logistica – Analisi di Sensitività</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Segoe UI','Inter','Roboto',system-ui,sans-serif;background:#eef2f7;color:#1a2e4a;min-height:100vh;}
+.app-wrapper{max-width:1700px;margin:0 auto;background:#fff;box-shadow:0 4px 40px rgba(0,0,0,.12);min-height:100vh;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0f2744 0%,#1e5799 55%,#2e86c1 100%);padding:28px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.header-left h1{font-size:1.75rem;font-weight:700;color:#fff;letter-spacing:-.5px;line-height:1.2;}
+.header-left p{color:#a8c8e8;font-size:.9rem;margin-top:4px;}
+.header-kpi{display:flex;gap:16px;flex-wrap:wrap;}
+.kpi-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:12px 20px;text-align:center;min-width:130px;}
+.kpi-card .kpi-label{font-size:.72rem;color:#a8c8e8;text-transform:uppercase;letter-spacing:.8px;}
+.kpi-card .kpi-value{font-size:1.25rem;font-weight:700;color:#fff;margin-top:3px;}
+.kpi-card .kpi-pct{font-size:.75rem;margin-top:2px;}
+.kpi-positive{color:#4ade80;}.kpi-negative{color:#f87171;}
+
+/* TABS */
+.tabs{display:flex;background:#f1f5f9;border-bottom:2px solid #dde4ef;overflow-x:auto;}
+.tab-btn{flex:1;min-width:140px;padding:16px 20px;border:none;background:none;cursor:pointer;font-size:.88rem;font-weight:600;color:#64748b;border-bottom:3px solid transparent;transition:all .25s;white-space:nowrap;}
+.tab-btn:hover{background:rgba(30,87,153,.06);color:#1e5799;}
+.tab-btn.active{color:#1e5799;border-bottom-color:#1e5799;background:#fff;}
+.tab-content{display:none;padding:32px 36px;animation:fadeUp .3s ease;}
+.tab-content.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* LAYOUT MODELLO */
+.modello-layout{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
+.panel{background:#f8fafc;border-radius:12px;padding:24px;border:1px solid #e2eaf4;}
+.panel h2{font-size:1.05rem;font-weight:700;color:#0f2744;display:flex;align-items:center;gap:8px;margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid #dde4ef;}
+
+/* P&L TABLE con colonna DELTA */
+.pl-section{margin-bottom:4px;}
+.pl-header{display:flex;justify-content:space-between;align-items:center;padding:9px 4px;cursor:pointer;user-select:none;border-radius:6px;transition:background .2s;}
+.pl-header:hover{background:rgba(30,87,153,.06);}
+.pl-header-title{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;color:#1e5799;}
+.toggle-dot{width:18px;height:18px;border-radius:50%;background:#1e5799;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:transform .25s;}
+.toggle-dot.open{transform:rotate(45deg);}
+
+/* Header con 3 colonne: label | base | scenario | delta */
+.pl-header-cols{display:flex;align-items:center;gap:0;}
+.col-base{width:120px;text-align:right;font-size:.78rem;color:#94a3b8;font-family:'Courier New',monospace;}
+.col-scen{width:120px;text-align:right;font-size:.88rem;font-weight:700;color:#0f2744;font-family:'Courier New',monospace;}
+.col-delta{width:90px;text-align:right;font-size:.78rem;font-weight:700;font-family:'Courier New',monospace;padding-right:4px;}
+.col-base-hdr{width:120px;text-align:right;font-size:.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;}
+.col-scen-hdr{width:120px;text-align:right;font-size:.7rem;color:#1e5799;text-transform:uppercase;letter-spacing:.5px;}
+.col-delta-hdr{width:90px;text-align:right;font-size:.7rem;color:#64748b;text-transform:uppercase;letter-spacing:.5px;padding-right:4px;}
+
+.pl-details{overflow:hidden;max-height:0;transition:max-height .35s ease;}
+.pl-details.open{max-height:500px;}
+.pl-row{display:flex;justify-content:space-between;align-items:center;padding:7px 4px 7px 26px;border-bottom:1px solid #eef2f7;font-size:.82rem;}
+.pl-row:last-child{border-bottom:none;}
+.pl-row-label{flex:1;color:#64748b;}
+.pl-row-cols{display:flex;align-items:center;gap:0;}
+
+/* RIGHE TOTALE */
+.pl-totale{display:flex;justify-content:space-between;align-items:center;padding:12px 8px;margin:8px 0;border-radius:8px;}
+.pl-totale-label{font-size:.92rem;font-weight:700;flex:1;}
+.pl-totale-cols{display:flex;align-items:center;gap:0;}
+.pl-totale-base{width:120px;text-align:right;font-size:.78rem;color:#94a3b8;font-family:'Courier New',monospace;}
+.pl-totale-scen{width:120px;text-align:right;font-size:.95rem;font-weight:700;font-family:'Courier New',monospace;}
+.pl-totale-delta{width:90px;text-align:right;font-size:.82rem;font-weight:700;font-family:'Courier New',monospace;padding-right:4px;}
+.t-ricavi{background:#eff6ff;color:#1e5799;}
+.t-ebitda{background:#f0fdf4;}.t-ebitda .pl-totale-label,.t-ebitda .pl-totale-scen{color:#15803d;}
+.t-ammort{background:#fefce8;}.t-ammort .pl-totale-label,.t-ammort .pl-totale-scen{color:#854d0e;}
+.t-ebit-pos{background:#f0fdf4;}.t-ebit-pos .pl-totale-label,.t-ebit-pos .pl-totale-scen{color:#15803d;}
+.t-ebit-neg{background:#fef2f2;}.t-ebit-neg .pl-totale-label,.t-ebit-neg .pl-totale-scen{color:#b91c1c;}
+
+/* DELTA BADGE */
+.d-pos{color:#15803d;}.d-neg{color:#b91c1c;}.d-zero{color:#94a3b8;}
+
+/* INTESTAZIONE COLONNE P&L */
+.pl-col-header{display:flex;justify-content:flex-end;padding:6px 8px 8px 4px;border-bottom:1px solid #dde4ef;margin-bottom:4px;}
+
+/* CHART */
+.chart-wrapper{position:relative;width:100%;height:320px;}
+
+/* ===================== SENSITIVITY ===================== */
+.sens-panel{margin-top:28px;}
+.sens-sliders{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;background:#f1f5f9;border-radius:10px;padding:20px;margin-bottom:28px;}
+.sens-group{display:flex;flex-direction:column;gap:8px;}
+.sens-group label{font-size:.82rem;font-weight:700;color:#0f2744;}
+.sens-group input[type=range]{width:100%;height:5px;border-radius:3px;background:#cbd5e1;outline:none;-webkit-appearance:none;cursor:pointer;}
+.sens-group input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#1e5799;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);}
+.sens-group input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#1e5799;cursor:pointer;border:none;}
+.sens-row{display:flex;justify-content:space-between;align-items:center;gap:6px;}
+.sens-current{font-size:.82rem;font-weight:700;color:#1e5799;}
+.sens-pct{font-size:.75rem;font-weight:700;padding:2px 7px;border-radius:4px;}
+.sens-pct-pos{background:#fee2e2;color:#b91c1c;}
+.sens-pct-neg{background:#dcfce7;color:#15803d;}
+.sens-pct-zero{background:#e2e8f0;color:#64748b;}
+
+/* NOTA SCENARIO ATTIVO */
+.scenario-note{background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 16px;font-size:.82rem;color:#92400e;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+.scenario-note.base-mode{background:#f0fdf4;border-color:#bbf7d0;color:#15803d;}
+
+/* GRAFICI 3D */
+.charts3d-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.chart3d-card{background:#fff;border:1px solid #e2eaf4;border-radius:10px;overflow:hidden;}
+.chart3d-title{padding:14px 16px;font-size:.88rem;font-weight:700;color:#0f2744;border-bottom:1px solid #e2eaf4;display:flex;align-items:center;justify-content:space-between;}
+.chart3d-container{width:100%;height:420px;position:relative;cursor:grab;}
+.chart3d-container:active{cursor:grabbing;}
+.chart3d-axes{display:flex;justify-content:space-around;padding:8px 16px 12px;font-size:.72rem;color:#64748b;background:#f8fafc;border-top:1px solid #e2eaf4;}
+.chart3d-axes span{display:flex;align-items:center;gap:4px;}
+.axis-badge{width:10px;height:10px;border-radius:2px;display:inline-block;}
+
+/* TOOLTIP 3D */
+.tooltip3d{position:absolute;background:rgba(15,39,68,.9);color:#fff;padding:8px 12px;border-radius:6px;font-size:.75rem;pointer-events:none;display:none;z-index:10;line-height:1.6;white-space:nowrap;}
+
+/* PARAMETRI */
+.param-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-bottom:28px;}
+.param-group{background:#f8fafc;border-radius:10px;padding:22px;border:1px solid #e2eaf4;}
+.param-group h3{font-size:.9rem;font-weight:700;color:#0f2744;padding-bottom:12px;border-bottom:2px solid #dde4ef;margin-bottom:16px;}
+.param-field{margin-bottom:12px;}.param-field:last-child{margin-bottom:0;}
+.param-field label{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:#475569;margin-bottom:5px;}
+.badge-sens{font-size:.65rem;background:#fef3c7;color:#92400e;border:1px solid #fde68a;border-radius:3px;padding:1px 5px;font-weight:700;}
+.param-field input{width:100%;padding:8px 10px;border:2px solid #e2e8f0;border-radius:6px;font-size:.85rem;font-family:'Courier New',monospace;color:#0f2744;transition:border-color .2s;}
+.param-field input:focus{outline:none;border-color:#1e5799;box-shadow:0 0 0 3px rgba(30,87,153,.1);}
+.param-field input.si{background:#fefce8;border-color:#fde68a;}
+
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{padding:11px 24px;border:none;border-radius:7px;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary{background:#1e5799;color:#fff;}.btn-primary:hover{background:#0f2744;}
+.btn-secondary{background:#e2e8f0;color:#334155;}.btn-secondary:hover{background:#cbd5e1;}
+.btn-danger{background:#fee2e2;color:#b91c1c;}.btn-danger:hover{background:#fecaca;}
+
+/* GUIDA */
+.guide-wrap{max-width:860px;margin:0 auto;}
+.guide-wrap h1{font-size:1.6rem;font-weight:700;color:#0f2744;margin-bottom:24px;}
+.guide-wrap h2{font-size:1.1rem;font-weight:700;color:#1e5799;margin:28px 0 12px;padding-bottom:6px;border-bottom:2px solid #dde4ef;}
+.guide-wrap h3{font-size:.95rem;font-weight:700;color:#0f2744;margin:18px 0 8px;}
+.guide-wrap p{line-height:1.8;color:#475569;margin-bottom:12px;font-size:.9rem;}
+.guide-wrap ul{margin-left:22px;margin-bottom:14px;}
+.guide-wrap li{margin-bottom:7px;line-height:1.65;color:#475569;font-size:.9rem;}
+.guide-wrap pre{background:#f1f5f9;padding:14px;border-radius:6px;font-size:.82rem;overflow-x:auto;color:#0f2744;margin:10px 0;}
+.info-box{background:#eff6ff;border-left:4px solid #1e5799;padding:14px 16px;border-radius:6px;margin:14px 0;}
+.warn-box{background:#fef3c7;border-left:4px solid #f59e0b;padding:14px 16px;border-radius:6px;margin:14px 0;}
+.guide-formula-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:10px 0;}
+.guide-formula-table th{background:#0f2744;color:#fff;padding:8px 12px;text-align:left;}
+.guide-formula-table td{padding:8px 12px;border-bottom:1px solid #e2eaf4;color:#475569;}
+.guide-formula-table tr:nth-child(even) td{background:#f8fafc;}
+
+.export-panel{background:#f8fafc;border:1px solid #e2eaf4;border-radius:10px;padding:20px 24px;margin-top:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.export-panel p{font-size:.85rem;color:#64748b;flex:1;}
+
+@media(max-width:1100px){.modello-layout,.charts3d-grid,.param-grid{grid-template-columns:1fr;}.sens-sliders{grid-template-columns:1fr;}.header{flex-direction:column;}.tab-content{padding:20px 18px;}}
+@media print{.tabs,.btn-row,.export-panel,.sens-panel{display:none!important;}.tab-content{display:block!important;}.modello-layout,.charts3d-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app-wrapper">
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <h1>📊 Should Cost Logistica</h1>
+    <p>Analisi di Sensitività · Modello P&L Trasporti · 2025</p>
+  </div>
+  <div class="header-kpi">
+    <div class="kpi-card">
+      <div class="kpi-label">Ricavi</div>
+      <div class="kpi-value" id="kpi-ricavi">—</div>
+      <div class="kpi-pct" style="color:#a8c8e8;">100%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">EBITDA</div>
+      <div class="kpi-value" id="kpi-ebitda">—</div>
+      <div class="kpi-pct" id="kpi-ebitda-pct">—</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">EBIT</div>
+      <div class="kpi-value" id="kpi-ebit">—</div>
+      <div class="kpi-pct" id="kpi-ebit-pct">—</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Flotta</div>
+      <div class="kpi-value" id="kpi-flotta">—</div>
+      <div class="kpi-pct" style="color:#a8c8e8;">mezzi</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Km effettivi</div>
+      <div class="kpi-value" id="kpi-km">—</div>
+      <div class="kpi-pct" style="color:#a8c8e8;">annui</div>
+    </div>
+  </div>
+</header>
+
+<!-- TABS -->
+<nav class="tabs">
+  <button class="tab-btn active" onclick="switchTab('modello',this)">📈 Modello P&L</button>
+  <button class="tab-btn" onclick="switchTab('parametri',this)">⚙️ Parametri</button>
+  <button class="tab-btn" onclick="switchTab('guida',this)">📖 Guida</button>
+</nav>
+
+<!-- ===== TAB MODELLO ===== -->
+<div id="tab-modello" class="tab-content active">
+
+  <!-- NOTA SCENARIO -->
+  <div id="scenario-note" class="scenario-note base-mode">
+    ✅ <strong>Scenario Base</strong> — sposta gli slider qui sotto per attivare l'analisi di sensitività. Il P&L si aggiorna in tempo reale mostrando il differenziale rispetto alla base.
+  </div>
+
+  <div class="modello-layout">
+
+    <!-- COLONNA SINISTRA: P&L -->
+    <div class="panel">
+      <h2>💰 Conto Economico Annuale</h2>
+
+      <!-- INTESTAZIONE COLONNE -->
+      <div class="pl-col-header">
+        <div class="pl-header-cols">
+          <span class="col-base-hdr">Base</span>
+          <span class="col-scen-hdr">Scenario</span>
+          <span class="col-delta-hdr">Δ</span>
+        </div>
+      </div>
+
+      <!-- FATTURATO -->
+      <div class="pl-totale t-ricavi">
+        <span class="pl-totale-label">🔵 RICAVI TOTALI</span>
+        <div class="pl-totale-cols">
+          <span class="pl-totale-base" id="base-ricavi">—</span>
+          <span class="pl-totale-scen" id="pl-ricavi">—</span>
+          <span class="pl-totale-delta d-zero" id="delta-ricavi">—</span>
+        </div>
+      </div>
+
+      <!-- AUTISTI -->
+      <div class="pl-section">
+        <div class="pl-header" onclick="togglePL('autisti')">
+          <div class="pl-header-title"><span class="toggle-dot" id="dot-autisti">+</span> 👤 Costo Autisti</div>
+          <div class="pl-header-cols">
+            <span class="col-base" id="base-ph-autisti">—</span>
+            <span class="col-scen" id="ph-autisti">—</span>
+            <span class="col-delta d-zero" id="delta-ph-autisti">—</span>
+          </div>
+        </div>
+        <div class="pl-details" id="pd-autisti">
+          <div class="pl-row"><span class="pl-row-label">Costo lordo autisti totale</span><div class="pl-row-cols"><span class="col-base" id="base-dr-autisti-tot">—</span><span class="col-scen" id="dr-autisti-tot">—</span><span class="col-delta d-zero" id="delta-autisti-tot">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Nr. autisti calcolati</span><div class="pl-row-cols"><span class="col-base" id="base-dr-nr-autisti">—</span><span class="col-scen" id="dr-nr-autisti">—</span><span class="col-delta d-zero" id="delta-nr-autisti">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">% su Ricavi</span><div class="pl-row-cols"><span class="col-base" id="base-dr-pct-autisti">—</span><span class="col-scen" id="dr-pct-autisti">—</span><span class="col-delta d-zero" id="delta-pct-autisti">—</span></div></div>
+        </div>
+      </div>
+
+      <!-- CARBURANTE -->
+      <div class="pl-section">
+        <div class="pl-header" onclick="togglePL('carb')">
+          <div class="pl-header-title"><span class="toggle-dot" id="dot-carb">+</span> ⛽ Carburante + AdBlue</div>
+          <div class="pl-header-cols">
+            <span class="col-base" id="base-ph-carb">—</span>
+            <span class="col-scen" id="ph-carb">—</span>
+            <span class="col-delta d-zero" id="delta-ph-carb">—</span>
+          </div>
+        </div>
+        <div class="pl-details" id="pd-carb">
+          <div class="pl-row"><span class="pl-row-label">Carburante (gasolio)</span><div class="pl-row-cols"><span class="col-base" id="base-dr-carb">—</span><span class="col-scen" id="dr-carb">—</span><span class="col-delta d-zero" id="delta-carb">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">AdBlue</span><div class="pl-row-cols"><span class="col-base" id="base-dr-adblue">—</span><span class="col-scen" id="dr-adblue">—</span><span class="col-delta d-zero" id="delta-adblue">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">% su Ricavi</span><div class="pl-row-cols"><span class="col-base" id="base-dr-pct-carb">—</span><span class="col-scen" id="dr-pct-carb">—</span><span class="col-delta d-zero" id="delta-pct-carb">—</span></div></div>
+        </div>
+      </div>
+
+      <!-- MANUTENZIONE -->
+      <div class="pl-section">
+        <div class="pl-header" onclick="togglePL('manu')">
+          <div class="pl-header-title"><span class="toggle-dot" id="dot-manu">+</span> 🔧 Manutenzione e Gomme</div>
+          <div class="pl-header-cols">
+            <span class="col-base" id="base-ph-manu">—</span>
+            <span class="col-scen" id="ph-manu">—</span>
+            <span class="col-delta d-zero" id="delta-ph-manu">—</span>
+          </div>
+        </div>
+        <div class="pl-details" id="pd-manu">
+          <div class="pl-row"><span class="pl-row-label">Manutenzione Autotreni</span><div class="pl-row-cols"><span class="col-base" id="base-dr-manu-auto">—</span><span class="col-scen" id="dr-manu-auto">—</span><span class="col-delta d-zero" id="delta-manu-auto">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Manutenzione Bilici</span><div class="pl-row-cols"><span class="col-base" id="base-dr-manu-bil">—</span><span class="col-scen" id="dr-manu-bil">—</span><span class="col-delta d-zero" id="delta-manu-bil">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Gomme</span><div class="pl-row-cols"><span class="col-base" id="base-dr-gomme">—</span><span class="col-scen" id="dr-gomme">—</span><span class="col-delta d-zero" id="delta-gomme">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">% su Ricavi</span><div class="pl-row-cols"><span class="col-base" id="base-dr-pct-manu">—</span><span class="col-scen" id="dr-pct-manu">—</span><span class="col-delta d-zero" id="delta-pct-manu">—</span></div></div>
+        </div>
+      </div>
+
+      <!-- ASSICURAZIONI -->
+      <div class="pl-section">
+        <div class="pl-header" onclick="togglePL('assic')">
+          <div class="pl-header-title"><span class="toggle-dot" id="dot-assic">+</span> 🛡️ Assicurazioni, Pedaggi, Tasse</div>
+          <div class="pl-header-cols">
+            <span class="col-base" id="base-ph-assic">—</span>
+            <span class="col-scen" id="ph-assic">—</span>
+            <span class="col-delta d-zero" id="delta-ph-assic">—</span>
+          </div>
+        </div>
+        <div class="pl-details" id="pd-assic">
+          <div class="pl-row"><span class="pl-row-label">Assicurazione + tasse (€4.500/mezzo)</span><div class="pl-row-cols"><span class="col-base" id="base-dr-assic-tasse">—</span><span class="col-scen" id="dr-assic-tasse">—</span><span class="col-delta d-zero" id="delta-assic-tasse">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Pedaggi autostradali</span><div class="pl-row-cols"><span class="col-base" id="base-dr-pedaggi">—</span><span class="col-scen" id="dr-pedaggi">—</span><span class="col-delta d-zero" id="delta-pedaggi">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Assicurazione merci</span><div class="pl-row-cols"><span class="col-base" id="base-dr-assic-merci">—</span><span class="col-scen" id="dr-assic-merci">—</span><span class="col-delta d-zero" id="delta-assic-merci">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">% su Ricavi</span><div class="pl-row-cols"><span class="col-base" id="base-dr-pct-assic">—</span><span class="col-scen" id="dr-pct-assic">—</span><span class="col-delta d-zero" id="delta-pct-assic">—</span></div></div>
+        </div>
+      </div>
+
+      <!-- ALTRI COSTI -->
+      <div class="pl-section">
+        <div class="pl-header" onclick="togglePL('altri')">
+          <div class="pl-header-title"><span class="toggle-dot" id="dot-altri">+</span> 📦 Altri Costi Operativi</div>
+          <div class="pl-header-cols">
+            <span class="col-base" id="base-ph-altri">—</span>
+            <span class="col-scen" id="ph-altri">—</span>
+            <span class="col-delta d-zero" id="delta-ph-altri">—</span>
+          </div>
+        </div>
+        <div class="pl-details" id="pd-altri">
+          <div class="pl-row"><span class="pl-row-label">Gestione flotta</span><div class="pl-row-cols"><span class="col-base" id="base-dr-flotta">—</span><span class="col-scen" id="dr-flotta">—</span><span class="col-delta d-zero" id="delta-flotta">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Lavaggi + Lubrificanti</span><div class="pl-row-cols"><span class="col-base" id="base-dr-lavlub">—</span><span class="col-scen" id="dr-lavlub">—</span><span class="col-delta d-zero" id="delta-lavlub">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Carichino + Turnover + Struttura</span><div class="pl-row-cols"><span class="col-base" id="base-dr-altri2">—</span><span class="col-scen" id="dr-altri2">—</span><span class="col-delta d-zero" id="delta-altri2">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">% su Ricavi</span><div class="pl-row-cols"><span class="col-base" id="base-dr-pct-altri">—</span><span class="col-scen" id="dr-pct-altri">—</span><span class="col-delta d-zero" id="delta-pct-altri">—</span></div></div>
+        </div>
+      </div>
+
+      <!-- EBITDA -->
+      <div class="pl-totale t-ebitda" style="margin-top:12px;">
+        <span class="pl-totale-label">🟢 EBITDA</span>
+        <div class="pl-totale-cols">
+          <span class="pl-totale-base" id="base-pl-ebitda">—</span>
+          <span class="pl-totale-scen" id="pl-ebitda">—</span>
+          <span class="pl-totale-delta d-zero" id="delta-pl-ebitda">—</span>
+        </div>
+      </div>
+
+      <!-- AMMORTAMENTI -->
+      <div class="pl-section">
+        <div class="pl-header" onclick="togglePL('ammort')">
+          <div class="pl-header-title"><span class="toggle-dot" id="dot-ammort">+</span> 📉 Ammortamenti + Interessi</div>
+          <div class="pl-header-cols">
+            <span class="col-base" id="base-ph-ammort">—</span>
+            <span class="col-scen" id="ph-ammort">—</span>
+            <span class="col-delta d-zero" id="delta-ph-ammort">—</span>
+          </div>
+        </div>
+        <div class="pl-details" id="pd-ammort">
+          <div class="pl-row"><span class="pl-row-label">Ammort. Autotreni</span><div class="pl-row-cols"><span class="col-base" id="base-dr-ammort-auto">—</span><span class="col-scen" id="dr-ammort-auto">—</span><span class="col-delta d-zero" id="delta-ammort-auto">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Ammort. Bilici</span><div class="pl-row-cols"><span class="col-base" id="base-dr-ammort-bil">—</span><span class="col-scen" id="dr-ammort-bil">—</span><span class="col-delta d-zero" id="delta-ammort-bil">—</span></div></div>
+          <div class="pl-row"><span class="pl-row-label">Interessi finanziamento</span><div class="pl-row-cols"><span class="col-base" id="base-dr-interessi">—</span><span class="col-scen" id="dr-interessi">—</span><span class="col-delta d-zero" id="delta-interessi">—</span></div></div>
+        </div>
+      </div>
+
+      <!-- EBIT -->
+      <div class="pl-totale" id="pl-ebit-totale" style="margin-top:12px;">
+        <span class="pl-totale-label" id="pl-ebit-label">⚫ EBIT</span>
+        <div class="pl-totale-cols">
+          <span class="pl-totale-base" id="base-pl-ebit">—</span>
+          <span class="pl-totale-scen" id="pl-ebit">—</span>
+          <span class="pl-totale-delta d-zero" id="delta-pl-ebit">—</span>
+        </div>
+      </div>
+    </div><!-- fine P&L -->
+
+    <!-- COLONNA DESTRA: grafici -->
+    <div style="display:flex;flex-direction:column;gap:22px;">
+      <div class="panel">
+        <h2>📊 Confronto Ricavi · EBITDA · EBIT</h2>
+        <div class="chart-wrapper"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <h2>🗂️ Composizione Costi Operativi</h2>
+        <div class="chart-wrapper"><canvas id="pieChart"></canvas></div>
+      </div>
+    </div>
+  </div><!-- fine modello-layout -->
+
+  <!-- ===== SENSITIVITY SECTION ===== -->
+  <div class="panel sens-panel" style="margin-top:28px;">
+    <h2>🎯 Analisi di Sensitività — Impatto sui Margini</h2>
+    <p style="font-size:.83rem;color:#64748b;margin-bottom:18px;">
+      Sposta gli slider per variare i 3 driver principali. Il <strong>P&L si aggiorna in tempo reale</strong> con la colonna Δ (differenziale rispetto alla base).
+      I grafici 3D mostrano la <strong>superficie di risposta</strong>: asse X = Consumo Carburante (±10%), asse Y = Costo Autisti (±10%), asse Z = valore del KPI.
+      Il 3° driver (Ratio) modifica entrambe le superfici. <em>Trascina per ruotare · Rotella = zoom.</em>
+    </p>
+
+    <!-- SLIDERS -->
+    <div class="sens-sliders">
+      <div class="sens-group">
+        <label>⛽ Consumo Carburante</label>
+        <input type="range" id="sl-consumo" min="-10" max="10" value="0" step="0.5" oninput="onSliderChange()">
+        <div class="sens-row">
+          <span class="sens-current" id="sv-consumo">33.33 L/100km</span>
+          <span class="sens-pct sens-pct-zero" id="sp-consumo">Base</span>
+        </div>
+      </div>
+      <div class="sens-group">
+        <label>👤 Costo Autisti</label>
+        <input type="range" id="sl-autisti" min="-10" max="10" value="0" step="0.5" oninput="onSliderChange()">
+        <div class="sens-row">
+          <span class="sens-current" id="sv-autisti">€ 69.800</span>
+          <span class="sens-pct sens-pct-zero" id="sp-autisti">Base</span>
+        </div>
+      </div>
+      <div class="sens-group">
+        <label>🔢 Ratio Autisti/Mezzo</label>
+        <input type="range" id="sl-ratio" min="-10" max="10" value="0" step="0.5" oninput="onSliderChange()">
+        <div class="sens-row">
+          <span class="sens-current" id="sv-ratio">1.100</span>
+          <span class="sens-pct sens-pct-zero" id="sp-ratio">Base</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRAFICI 3D -->
+    <div class="charts3d-grid">
+      <!-- EBITDA -->
+      <div class="chart3d-card">
+        <div class="chart3d-title">
+          <span>🟢 Superficie EBITDA (M€) — asse Z</span>
+          <span style="font-size:.72rem;color:#64748b;font-weight:400;">Ruota · Zoom</span>
+        </div>
+        <div class="chart3d-container" id="c3d-ebitda">
+          <div class="tooltip3d" id="tt-ebitda"></div>
+        </div>
+        <div class="chart3d-axes">
+          <span><span class="axis-badge" style="background:#e11d48;"></span> X = Consumo Carburante (L/100km)</span>
+          <span><span class="axis-badge" style="background:#2563eb;"></span> Y = Costo Autisti (€)</span>
+          <span><span class="axis-badge" style="background:#16a34a;"></span> Z = EBITDA (M€)</span>
+        </div>
+      </div>
+      <!-- EBIT -->
+      <div class="chart3d-card">
+        <div class="chart3d-title">
+          <span>🔵 Superficie EBIT (M€) — asse Z</span>
+          <span style="font-size:.72rem;color:#64748b;font-weight:400;">Ruota · Zoom</span>
+        </div>
+        <div class="chart3d-container" id="c3d-ebit">
+          <div class="tooltip3d" id="tt-ebit"></div>
+        </div>
+        <div class="chart3d-axes">
+          <span><span class="axis-badge" style="background:#e11d48;"></span> X = Consumo Carburante (L/100km)</span>
+          <span><span class="axis-badge" style="background:#2563eb;"></span> Y = Costo Autisti (€)</span>
+          <span><span class="axis-badge" style="background:#16a34a;"></span> Z = EBIT (M€)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="export-panel">
+      <p>💾 Esporta il P&L dello scenario corrente o stampa come PDF.</p>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-primary" onclick="exportCSV()">📥 Esporta CSV</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Stampa / PDF</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- fine tab-modello -->
+
+<!-- ===== TAB PARAMETRI ===== -->
+<div id="tab-parametri" class="tab-content">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+    <div>
+      <h2 style="font-size:1.2rem;font-weight:700;color:#0f2744;">⚙️ Parametri di Input</h2>
+      <p style="font-size:.83rem;color:#64748b;margin-top:4px;">I parametri <span class="badge-sens">SENSITIVITY</span> sono i 3 driver degli slider. Gli altri aggiornano il modello base al salvataggio.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveParams()">💾 Salva &amp; Ricalcola</button>
+      <button class="btn btn-danger" onclick="resetParams()">🔄 Ripristina Default</button>
+    </div>
+  </div>
+  <div class="param-grid" id="param-grid"></div>
+</div>
+
+<!-- ===== TAB GUIDA ===== -->
+<div id="tab-guida" class="tab-content">
+  <div class="guide-wrap">
+    <h1>📖 Guida all'Utilizzo</h1>
+    <h2>Cos'è questo strumento?</h2>
+    <p>Dashboard interattivo basato sul modello <strong>Should Cost</strong> per la logistica e il trasporto. Calcola il P&L in tempo reale e permette di fare analisi di sensitività sui 3 driver di costo principali tramite slider e superfici 3D.</p>
+
+    <h2>Come leggere il P&L con i differenziali</h2>
+    <p>Il Conto Economico mostra <strong>3 colonne</strong>:</p>
+    <ul>
+      <li><strong>Base</strong> (grigio) — valore calcolato con i parametri di default o salvati</li>
+      <li><strong>Scenario</strong> (nero) — valore ricalcolato con gli slider di sensitività attivi</li>
+      <li><strong>Δ</strong> (verde/rosso) — differenza assoluta tra Scenario e Base</li>
+    </ul>
+    <div class="info-box"><strong>💡</strong> Quando tutti gli slider sono a zero, Base = Scenario e il Δ è —. Non appena sposti uno slider, il ricalcolo avviene istantaneamente.</div>
+
+    <h2>Come leggere i grafici 3D</h2>
+    <p>Ogni superficie risponde alla domanda: <em>"Se il consumo di carburante fosse X e il costo degli autisti fosse Y, quale sarebbe l'EBITDA (o l'EBIT)?"</em></p>
+    <ul>
+      <li><strong>Asse X</strong> = Consumo carburante variato da −10% a +10% rispetto al valore base</li>
+      <li><strong>Asse Y</strong> = Costo autisti variato da −10% a +10% rispetto al valore base</li>
+      <li><strong>Asse Z</strong> = Valore del KPI (EBITDA o EBIT) in milioni di €</li>
+      <li><strong>Colori</strong>: verde = margine alto, giallo = medio, rosso = basso / negativo</li>
+    </ul>
+    <p>Il 3° slider (Ratio Autisti/Mezzo) fissa un livello fisso di ratio e rigenera entrambe le superfici, permettendo di capire come cambia la <em>forma</em> della superficie al variare di questo driver.</p>
+    <div class="info-box"><strong>🎮 Interazione:</strong> Trascina con il mouse per ruotare · Rotella = zoom · Passa il mouse sui punti per vedere i valori esatti.</div>
+
+    <h2>Formule Principali</h2>
+    <table class="guide-formula-table">
+      <tr><th>Voce</th><th>Formula</th></tr>
+      <tr><td>FATTURATO</td><td>Somma fatturati 7 sedi</td></tr>
+      <tr><td>Costo Autisti</td><td>Flotta_gestita × Ratio × Stipendio_annuo</td></tr>
+      <tr><td>Carburante</td><td>Km_tot × (1+Fatt_corr) × (Consumo/100) × Prezzo_gasolio</td></tr>
+      <tr><td>AdBlue</td><td>((Km_eff/100) × 1.5) × 0.3 / 1.22</td></tr>
+      <tr><td>Ammort./mezzo Autotreno</td><td>Trattore×(1−0.30)/6 + (Rim+Motrice)×(1−0.20)/12</td></tr>
+      <tr><td>EBITDA</td><td>Ricavi − Σ Costi Operativi</td></tr>
+      <tr><td>EBIT</td><td>EBITDA − Ammortamenti − Interessi</td></tr>
+    </table>
+
+    <h2>FAQ</h2>
+    <h3>Q: Gli slider modificano i parametri salvati?</h3>
+    <p>R: No. Gli slider sono <em>temporanei</em>: modificano solo lo scenario visualizzato senza alterare i parametri base. Per cambiare la base, vai nel tab Parametri e clicca "Salva &amp; Ricalcola".</p>
+    <h3>Q: Come si azzerano gli slider?</h3>
+    <p>R: Doppio click su qualsiasi slider lo riporta a zero (scenario base).</p>
+    <h3>Q: Perché l'EBIT base è negativo?</h3>
+    <p>R: Con i dati 2025, il peso degli ammortamenti e degli interessi erode il margine EBITDA (15.7%), portando l'EBIT a −0.9%. Significa che il business genera cassa ma non copre il costo del capitale investito nella flotta.</p>
+  </div>
+</div>
+
+</div><!-- fine app-wrapper -->
+
+<script>
+/* ==============================================
+   PARAMETRI DEFAULT (valori indipendenti Excel)
+============================================== */
+const DEFAULTS = {
+  B6:80, B7:35, B8:88, B9:12, B10:1, B11:1,
+  B17:135000, B18:120000, B19:65000, B20:80000, B21:120000,
+  B22:6, B23:12, B24:0.3, B25:0.2, B26:0.035,
+  B34:69800, B35:1.1, B37:13,
+  B42:19684242, B43:0.113, B44:33.333333,
+  PREZZO_CARB:1.131298,
+  B54:4500, B55:0.12, B57:1000, B58:2000,
+  B60:0.00126, B61:214061.4, B62:0.03,
+  B66:7210816.12, B67:6700222.73, B68:3118415.71,
+  B69:3993786.43, B70:13022234.59, B71:3615855.32, B72:3677748.93
+};
+
+let P = {};      // parametri attivi
+let BASE = {};   // risultati scenario base (per calcolo delta)
+
+function loadParams() {
+  const saved = localStorage.getItem('shouldCostV3');
+  P = saved ? JSON.parse(saved) : Object.assign({}, DEFAULTS);
+}
+function saveParams() {
+  document.querySelectorAll('.param-input-field').forEach(inp => {
+    P[inp.dataset.key] = parseFloat(inp.value) || 0;
+  });
+  localStorage.setItem('shouldCostV3', JSON.stringify(P));
+  // Azzera gli slider quando si salvano nuovi parametri base
+  ['sl-consumo','sl-autisti','sl-ratio'].forEach(id => {
+    document.getElementById(id).value = 0;
+  });
+  BASE = calcWith(P);
+  onSliderChange();
+  showToast('✅ Parametri salvati — scenario base aggiornato!');
+}
+function resetParams() {
+  if(!confirm('Ripristinare tutti i valori di default?')) return;
+  P = Object.assign({}, DEFAULTS);
+  localStorage.removeItem('shouldCostV3');
+  ['sl-consumo','sl-autisti','sl-ratio'].forEach(id => document.getElementById(id).value = 0);
+  BASE = calcWith(P);
+  populateParamUI();
+  onSliderChange();
+  showToast('🔄 Valori di default ripristinati!');
+}
+function showToast(msg) {
+  let t = document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast';
+    t.style.cssText='position:fixed;bottom:28px;right:28px;background:#0f2744;color:#fff;padding:12px 22px;border-radius:8px;font-size:.88rem;font-weight:600;z-index:9999;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:opacity .4s;';
+    document.body.appendChild(t); }
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(t._hide); t._hide=setTimeout(()=>t.style.opacity='0',2800);
+}
+
+/* ==============================================
+   MOTORE DI CALCOLO — traduzione 1:1 da Excel
+============================================== */
+function calcWith(p) {
+  const B12 = p.B6+p.B8+p.B10;
+  const B13 = p.B6+p.B7+p.B8+p.B9+p.B10+p.B11;
+  const ammAutoMezzo = p.B17*(1-p.B24)/p.B22 + (p.B20+p.B19)*(1-p.B25)/p.B23;
+  const ammBilMezzo  = p.B18*(1-p.B24)/p.B22 + p.B21*(1-p.B25)/p.B23;
+  const intAutoMezzo = (p.B17+p.B20)*p.B26;
+  const intBilMezzo  = (p.B18+p.B21)*p.B26;
+  const nrAutisti    = B13*p.B35;
+  const costoAutisti = nrAutisti*p.B34;
+  const kmEff        = p.B42*(1+p.B43);
+  const adblue       = (kmEff/100*1.5)*0.3/1.22;
+  const carburante   = p.B42*(1+p.B43)*(p.B44/100)*p.PREZZO_CARB;
+  const nrAutoTot    = p.B6+p.B7+p.B11;
+  const nrBilTot     = p.B8+p.B9;
+  const manuAuto     = 0.0876*kmEff*(nrAutoTot/B13);
+  const manuBil      = 0.0876*kmEff*(nrBilTot/B13);
+  const gomme        = (650/200000*12)*p.B42*(1+p.B43);
+  const fatturato    = p.B66+p.B67+p.B68+p.B69+p.B70+p.B71+p.B72;
+  const assicTasse   = p.B54*B13;
+  const pedaggi      = p.B55*(p.B42*1+p.B43);
+  const assicMerci   = p.B60*fatturato;
+  const gestioneFlotta = (B13/25)*p.B34;
+  const lavaggi      = p.B57*B13;
+  const lubrificanti = p.B58*B13;
+  const carichino    = p.B37*p.B34*p.B35;
+  const turnover     = p.B61;
+  const struttura    = p.B62*fatturato;
+  const totAutisti   = costoAutisti;
+  const totCarb      = carburante+adblue;
+  const totManu      = manuAuto+manuBil+gomme;
+  const totAssic     = assicTasse+pedaggi+assicMerci;
+  const totAltri     = gestioneFlotta+lavaggi+lubrificanti+carichino+turnover+struttura;
+  const totCostiOp   = totAutisti+totCarb+totManu+totAssic+totAltri;
+  const ebitda       = fatturato-totCostiOp;
+  const ammAuto      = (p.B6+p.B7+p.B11)*ammAutoMezzo;
+  const ammBil       = (p.B8+p.B9)*ammBilMezzo;
+  const interessi    = intAutoMezzo*(p.B6+p.B7+p.B11)+intBilMezzo*(p.B8+p.B9);
+  const totAmmInt    = ammAuto+ammBil+interessi;
+  const ebit         = ebitda-totAmmInt;
+  return { fatturato, B12, B13, nrAutisti, kmEff, costoAutisti,
+    carburante, adblue, manuAuto, manuBil, gomme,
+    assicTasse, pedaggi, assicMerci, gestioneFlotta, lavaggi,
+    lubrificanti, carichino, turnover, struttura,
+    totAutisti, totCarb, totManu, totAssic, totAltri, totCostiOp,
+    ebitda, ammAuto, ammBil, interessi, totAmmInt, ebit };
+}
+
+/* ==============================================
+   FORMATTAZIONE
+============================================== */
+function fmtM(v){ return (v/1e6).toFixed(2)+'M'; }
+function fmtK(v){ return '€ '+Math.round(v).toLocaleString('it-IT'); }
+function fmtPct(v,tot){ return tot?((v/tot)*100).toFixed(1)+'%':'—'; }
+function fmtNum(v){ return Math.round(v).toLocaleString('it-IT'); }
+function fmtDelta(v) {
+  if(Math.abs(v)<100) return '—';
+  const sign = v>0?'+':'';
+  return sign+'€ '+Math.round(v).toLocaleString('it-IT');
+}
+function deltaClass(v, isCost) {
+  // Per i costi: aumento = negativo (rosso), riduzione = positivo (verde)
+  // Per i margini: aumento = positivo (verde), riduzione = negativo (rosso)
+  if(Math.abs(v)<100) return 'd-zero';
+  if(isCost) return v>0?'d-neg':'d-pos';
+  return v>0?'d-pos':'d-neg';
+}
+
+/* ==============================================
+   AGGIORNA UI (P&L + KPI)
+============================================== */
+function updateUI(scen, base) {
+  const f = scen.fatturato;
+  const bf = base.fatturato;
+  const isScenario = Math.abs(scen.ebitda - base.ebitda) > 100;
+
+  // Nota scenario
+  const note = document.getElementById('scenario-note');
+  if(isScenario) {
+    note.className = 'scenario-note';
+    note.innerHTML = '⚠️ <strong>Scenario Attivo</strong> — i valori colonna "Scenario" riflettono gli slider. La colonna Δ mostra il differenziale rispetto alla base. Riporta tutti gli slider a 0 per tornare alla base.';
+  } else {
+    note.className = 'scenario-note base-mode';
+    note.innerHTML = '✅ <strong>Scenario Base</strong> — sposta gli slider qui sotto per attivare l\'analisi di sensitività.';
+  }
+
+  // Header KPI
+  document.getElementById('kpi-ricavi').textContent = fmtM(f);
+  document.getElementById('kpi-ebitda').textContent = fmtM(scen.ebitda);
+  document.getElementById('kpi-ebit').textContent   = fmtM(scen.ebit);
+  document.getElementById('kpi-flotta').textContent = scen.B13;
+  document.getElementById('kpi-km').textContent     = fmtM(scen.kmEff);
+  const eEl = document.getElementById('kpi-ebitda-pct');
+  const iEl = document.getElementById('kpi-ebit-pct');
+  eEl.textContent = fmtPct(scen.ebitda,f); eEl.className = scen.ebitda>=0?'kpi-positive':'kpi-negative';
+  iEl.textContent = fmtPct(scen.ebit,f);   iEl.className = scen.ebit>=0?'kpi-positive':'kpi-negative';
+
+  // Helper per settare le 3 colonne
+  function set3(id, baseVal, scenVal, isCost, formatter) {
+    const fmt = formatter || fmtK;
+    si('base-'+id, fmt(baseVal));
+    si(id, fmt(scenVal));
+    const d = scenVal - baseVal;
+    const el = document.getElementById('delta-'+id);
+    if(el){ el.textContent = fmtDelta(d); el.className = deltaClass(d, isCost); }
+  }
+  function si(id, val){ const e=document.getElementById(id); if(e) e.textContent=val; }
+
+  // RICAVI
+  set3('pl-ricavi',   base.fatturato, scen.fatturato, false);
+  si('base-ricavi', fmtK(base.fatturato));
+  si('pl-ricavi',   fmtK(scen.fatturato));
+  const dr = scen.fatturato - base.fatturato;
+  const drEl = document.getElementById('delta-ricavi');
+  if(drEl){ drEl.textContent = fmtDelta(dr); drEl.className = deltaClass(dr,false); }
+
+  // AUTISTI
+  set3('ph-autisti',      base.totAutisti,   scen.totAutisti,   true);
+  set3('dr-autisti-tot',  base.costoAutisti,  scen.costoAutisti,  true);
+  si('base-dr-nr-autisti', Math.round(base.nrAutisti)+' aut.');
+  si('dr-nr-autisti',      Math.round(scen.nrAutisti)+' aut.');
+  const dnr = scen.nrAutisti-base.nrAutisti;
+  const dnrEl = document.getElementById('delta-nr-autisti');
+  if(dnrEl){ dnrEl.textContent = Math.abs(dnr)<0.1?'—':(dnr>0?'+':'')+dnr.toFixed(1); dnrEl.className = deltaClass(dnr,true); }
+  si('base-dr-pct-autisti', fmtPct(base.totAutisti,bf));
+  si('dr-pct-autisti',      fmtPct(scen.totAutisti,f));
+  const dpca = (scen.totAutisti/f - base.totAutisti/bf)*100;
+  const dpcaEl = document.getElementById('delta-pct-autisti');
+  if(dpcaEl){ dpcaEl.textContent = Math.abs(dpca)<0.05?'—':(dpca>0?'+':'')+dpca.toFixed(1)+'pp'; dpcaEl.className = deltaClass(dpca,true); }
+
+  // CARBURANTE
+  set3('ph-carb',    base.totCarb,    scen.totCarb,    true);
+  set3('dr-carb',    base.carburante, scen.carburante, true);
+  set3('dr-adblue',  base.adblue,     scen.adblue,     true);
+  si('base-dr-pct-carb', fmtPct(base.totCarb,bf));
+  si('dr-pct-carb',      fmtPct(scen.totCarb,f));
+  const dpcc = (scen.totCarb/f - base.totCarb/bf)*100;
+  const dpccEl = document.getElementById('delta-pct-carb');
+  if(dpccEl){ dpccEl.textContent = Math.abs(dpcc)<0.05?'—':(dpcc>0?'+':'')+dpcc.toFixed(1)+'pp'; dpccEl.className = deltaClass(dpcc,true); }
+
+  // MANUTENZIONE
+  set3('ph-manu',      base.totManu,  scen.totManu,  true);
+  set3('dr-manu-auto', base.manuAuto, scen.manuAuto, true);
+  set3('dr-manu-bil',  base.manuBil,  scen.manuBil,  true);
+  set3('dr-gomme',     base.gomme,    scen.gomme,    true);
+  si('base-dr-pct-manu', fmtPct(base.totManu,bf));
+  si('dr-pct-manu',      fmtPct(scen.totManu,f));
+  si('delta-pct-manu',   '—');
+
+  // ASSICURAZIONI
+  set3('ph-assic',        base.totAssic,   scen.totAssic,   true);
+  set3('dr-assic-tasse',  base.assicTasse, scen.assicTasse, true);
+  set3('dr-pedaggi',      base.pedaggi,    scen.pedaggi,    true);
+  set3('dr-assic-merci',  base.assicMerci, scen.assicMerci, true);
+  si('base-dr-pct-assic', fmtPct(base.totAssic,bf));
+  si('dr-pct-assic',      fmtPct(scen.totAssic,f));
+  si('delta-pct-assic',   '—');
+
+  // ALTRI
+  set3('ph-altri', base.totAltri, scen.totAltri, true);
+  si('base-dr-flotta',  fmtK(base.gestioneFlotta));
+  si('dr-flotta',       fmtK(scen.gestioneFlotta));
+  const dfl = scen.gestioneFlotta-base.gestioneFlotta;
+  const dflEl = document.getElementById('delta-flotta');
+  if(dflEl){ dflEl.textContent = fmtDelta(dfl); dflEl.className = deltaClass(dfl,true); }
+  const baseLavLub = base.lavaggi+base.lubrificanti;
+  const scenLavLub = scen.lavaggi+scen.lubrificanti;
+  si('base-dr-lavlub', fmtK(baseLavLub));
+  si('dr-lavlub',      fmtK(scenLavLub));
+  si('delta-lavlub',   '—');
+  const baseAltri2 = base.carichino+base.turnover+base.struttura;
+  const scenAltri2 = scen.carichino+scen.turnover+scen.struttura;
+  set3('dr-altri2', baseAltri2, scenAltri2, true);
+  si('base-dr-pct-altri', fmtPct(base.totAltri,bf));
+  si('dr-pct-altri',      fmtPct(scen.totAltri,f));
+  si('delta-pct-altri',   '—');
+
+  // EBITDA
+  si('base-pl-ebitda', fmtK(base.ebitda));
+  si('pl-ebitda',      fmtK(scen.ebitda)+'  ('+fmtPct(scen.ebitda,f)+')');
+  const de = scen.ebitda-base.ebitda;
+  const deEl = document.getElementById('delta-pl-ebitda');
+  if(deEl){ deEl.textContent = fmtDelta(de); deEl.className = deltaClass(de,false); }
+
+  // AMMORTAMENTI
+  set3('ph-ammort',      base.totAmmInt, scen.totAmmInt, true);
+  set3('dr-ammort-auto', base.ammAuto,   scen.ammAuto,   true);
+  set3('dr-ammort-bil',  base.ammBil,    scen.ammBil,    true);
+  set3('dr-interessi',   base.interessi, scen.interessi, true);
+
+  // EBIT
+  const ebitTotale = document.getElementById('pl-ebit-totale');
+  ebitTotale.className = 'pl-totale '+(scen.ebit>=0?'t-ebit-pos':'t-ebit-neg');
+  si('pl-ebit-label', scen.ebit>=0?'🟢 EBIT':'🔴 EBIT');
+  si('base-pl-ebit', fmtK(base.ebit));
+  si('pl-ebit',      fmtK(scen.ebit)+'  ('+fmtPct(scen.ebit,f)+')');
+  const dit = scen.ebit-base.ebit;
+  const ditEl = document.getElementById('delta-pl-ebit');
+  if(ditEl){ ditEl.textContent = fmtDelta(dit); ditEl.className = deltaClass(dit,false); }
+}
+
+/* ==============================================
+   GRAFICI 2D (Chart.js)
+============================================== */
+let barChart=null, pieChart=null;
+function updateCharts(scen) {
+  // BAR
+  const bCtx = document.getElementById('barChart');
+  if(barChart) barChart.destroy();
+  const colors = ['#1e5799','#15803d', scen.ebit>=0?'#15803d':'#b91c1c'];
+  barChart = new Chart(bCtx, {
+    type:'bar',
+    data:{
+      labels:['Ricavi','EBITDA','EBIT'],
+      datasets:[{
+        data:[scen.fatturato,scen.ebitda,scen.ebit],
+        backgroundColor:colors.map(c=>c+'cc'), borderColor:colors,
+        borderWidth:2, borderRadius:6
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      plugins:{legend:{display:false}, tooltip:{callbacks:{label:c=>fmtK(c.parsed.x)}}},
+      scales:{x:{ticks:{callback:v=>'€ '+Math.round(v/1e6)+'M'},grid:{color:'#f1f5f9'}},y:{grid:{display:false}}}
+    }
+  });
+  // PIE
+  const pCtx = document.getElementById('pieChart');
+  if(pieChart) pieChart.destroy();
+  const labels = ['Autisti','Carburante+AdBlue','Manutenzione','Assicur.+Pedaggi','Altri Operativi','Ammort.+Interessi'];
+  const vals   = [scen.totAutisti,scen.totCarb,scen.totManu,scen.totAssic,scen.totAltri,scen.totAmmInt];
+  const pc     = ['#1e5799','#0ea5e9','#6366f1','#8b5cf6','#06b6d4','#f59e0b'];
+  pieChart = new Chart(pCtx, {
+    type:'doughnut',
+    data:{labels, datasets:[{data:vals,backgroundColor:pc.map(c=>c+'dd'),borderWidth:2,borderColor:'#fff'}]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:14}},
+        tooltip:{callbacks:{label:c=>{
+          const v=c.parsed; const tot=c.dataset.data.reduce((a,b)=>a+b,0);
+          return ` ${fmtK(v)}  (${(v/tot*100).toFixed(1)}%)`;
+        }}}
+      }
+    }
+  });
+}
+
+/* ==============================================
+   GRAFICI 3D (Three.js) con assi etichettati e tooltip
+============================================== */
+const ctx3d = {}; // contiene renderer e stato per ogni grafico
+
+function buildSurface3D(containerId, tooltipId, metricKey) {
+  const container = document.getElementById(containerId);
+  if(!container) return;
+
+  // Cleanup precedente
+  if(ctx3d[containerId]) {
+    cancelAnimationFrame(ctx3d[containerId].animId);
+    ctx3d[containerId].renderer.dispose();
+    // rimuoviamo solo il canvas, non il tooltip div
+    const canvas = container.querySelector('canvas');
+    if(canvas) canvas.remove();
+  }
+
+  const W = container.clientWidth || 500;
+  const H = container.clientHeight || 420;
+  const STEPS = 21; // -10 a +10, step 1
+  const half  = (STEPS-1)/2;
+
+  // ---- Calcola griglia Z ----
+  const consumoBase = P.B44;
+  const autistiBase = P.B34;
+  const ratioBase   = P.B35;
+  // Prendi il ratio corrente dallo slider
+  const ratioSliderPct = parseFloat(document.getElementById('sl-ratio').value);
+  const ratioUsato = ratioBase * (1 + ratioSliderPct/100);
+
+  const grid = []; // grid[j][i] = { xPct, yPct, xReal, yReal, z }
+  for(let j=0; j<STEPS; j++){
+    grid[j] = [];
+    for(let i=0; i<STEPS; i++){
+      const xPct = (i-half)*1;  // -10..+10
+      const yPct = (j-half)*1;
+      const xReal = consumoBase*(1+xPct/100);
+      const yReal = autistiBase*(1+yPct/100);
+      const tempP = Object.assign({}, P, {B44:xReal, B34:yReal, B35:ratioUsato});
+      const res = calcWith(tempP);
+      const z = (metricKey==='ebitda') ? res.ebitda/1e6 : res.ebit/1e6;
+      grid[j][i] = { xPct, yPct, xReal, yReal, z };
+    }
+  }
+
+  // Min/max Z per colore e scala
+  let zMin=Infinity, zMax=-Infinity;
+  grid.forEach(row=>row.forEach(pt=>{ if(pt.z<zMin)zMin=pt.z; if(pt.z>zMax)zMax=pt.z; }));
+  const zRange = zMax-zMin || 1;
+  const zScale = 10/zRange;  // normalizza in -5..+5
+
+  function normZ(z){ return (z-zMin)*zScale - 5; }
+  function colorOf(t) { // t=0..1
+    const r = t<0.5 ? 1 : 2*(1-t);
+    const g = t>0.5 ? 1 : 2*t;
+    return [r, g, 0.1];
+  }
+
+  // ---- Three.js scene ----
+  const scene    = new THREE.Scene();
+  scene.background = new THREE.Color(0xfafafa);
+
+  const camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 500);
+  camera.position.set(18, 14, 18);
+  camera.lookAt(0,0,0);
+
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  // ---- Geometria superficie ----
+  const positions=[], colors=[];
+  for(let j=0; j<STEPS-1; j++){
+    for(let i=0; i<STEPS-1; i++){
+      const pts = [
+        grid[j][i], grid[j][i+1], grid[j+1][i],
+        grid[j][i+1], grid[j+1][i+1], grid[j+1][i]
+      ];
+      pts.forEach(pt=>{
+        const x = (pt.xPct);   // -10..+10
+        const y = normZ(pt.z); // -5..+5
+        const z = (pt.yPct);   // -10..+10
+        positions.push(x, y, z);
+        const t = (pt.z-zMin)/zRange;
+        const [r,g,b] = colorOf(t);
+        colors.push(r,g,b);
+      });
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('color',    new THREE.Float32BufferAttribute(colors, 3));
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshPhongMaterial({vertexColors:true, shininess:50, side:THREE.DoubleSide});
+  const mesh = new THREE.Mesh(geo, mat);
+  scene.add(mesh);
+
+  // ---- Griglia a pavimento ----
+  const gridH = new THREE.GridHelper(22, 10, 0xbbbbbb, 0xdddddd);
+  gridH.position.y = -5.3;
+  scene.add(gridH);
+
+  // ---- Linee assi con etichette via sprite ----
+  function makeAxisLine(from, to, color) {
+    const mat = new THREE.LineBasicMaterial({color});
+    const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...from), new THREE.Vector3(...to)]);
+    return new THREE.Line(geo, mat);
+  }
+  scene.add(makeAxisLine([-11,  -5.3, 0], [11, -5.3, 0],  0xe11d48)); // X asse
+  scene.add(makeAxisLine([0,    -5.3, 0], [0,   5.3, 0],  0x16a34a)); // Y asse (Z KPI)
+  scene.add(makeAxisLine([0,    -5.3,-11],[0,  -5.3,11],  0x2563eb)); // Z asse (autisti)
+
+  // Tick labels X (consumo)
+  [-10,-5,0,5,10].forEach(pct => {
+    const xReal = (consumoBase*(1+pct/100)).toFixed(1);
+    makeTextSprite(`${xReal}`, new THREE.Vector3(pct, -6.0, 12), scene, '#e11d48');
+  });
+  // Tick labels Y (autisti)
+  [-10,-5,0,5,10].forEach(pct => {
+    const yReal = Math.round(autistiBase*(1+pct/100)/1000);
+    makeTextSprite(`${yReal}k`, new THREE.Vector3(12, -5.3, pct), scene, '#2563eb');
+  });
+  // Tick labels Z (valore KPI)
+  const zSteps = 5;
+  for(let k=0; k<=zSteps; k++){
+    const zVal = (zMin + (zRange/zSteps)*k).toFixed(2);
+    const yPos = normZ(parseFloat(zVal));
+    makeTextSprite(`${zVal}M`, new THREE.Vector3(-13, yPos, 0), scene, '#16a34a');
+  }
+
+  // ---- Luci ----
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.7);
+  dl.position.set(15,20,15); scene.add(dl);
+  const dl2 = new THREE.DirectionalLight(0xffffff, 0.25);
+  dl2.position.set(-10,-5,-10); scene.add(dl2);
+
+  // ---- Raycaster per tooltip ----
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  const ttEl = document.getElementById(tooltipId);
+
+  renderer.domElement.addEventListener('mousemove', e => {
+    if(isDragging) return;
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX-rect.left)/rect.width)*2 - 1;
+    mouse.y = -((e.clientY-rect.top)/rect.height)*2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObject(mesh);
+    if(hits.length > 0){
+      const pt = hits[0].point;
+      // Trova il punto della griglia più vicino
+      const xi = Math.round(pt.x + half);
+      const yi = Math.round(pt.z + half);
+      const ci = Math.max(0, Math.min(STEPS-1, xi));
+      const cj = Math.max(0, Math.min(STEPS-1, yi));
+      const gp = grid[cj][ci];
+      ttEl.style.display = 'block';
+      ttEl.style.left = (e.clientX - rect.left + 10)+'px';
+      ttEl.style.top  = (e.clientY - rect.top  - 40)+'px';
+      ttEl.innerHTML  = `Consumo: ${gp.xReal.toFixed(2)} L/100km (${gp.xPct>0?'+':''}${gp.xPct}%)<br>Autisti: €${Math.round(gp.yReal).toLocaleString('it-IT')} (${gp.yPct>0?'+':''}${gp.yPct}%)<br><strong>${metricKey.toUpperCase()}: ${gp.z.toFixed(3)} M€</strong>`;
+    } else {
+      ttEl.style.display = 'none';
+    }
+  });
+  renderer.domElement.addEventListener('mouseleave', ()=>{ ttEl.style.display='none'; });
+
+  // ---- Controlli orbita ----
+  let isDragging=false, lastX=0, lastY=0, rotX=-0.45, rotY=0.5;
+
+  renderer.domElement.addEventListener('mousedown', e=>{isDragging=true; lastX=e.clientX; lastY=e.clientY;});
+  window.addEventListener('mouseup', ()=>isDragging=false);
+  renderer.domElement.addEventListener('mousemove', e=>{
+    if(!isDragging) return;
+    rotY += (e.clientX-lastX)*0.012;
+    rotX += (e.clientY-lastY)*0.012;
+    rotX = Math.max(-1.4, Math.min(1.4, rotX));
+    lastX=e.clientX; lastY=e.clientY;
+  });
+  renderer.domElement.addEventListener('wheel', e=>{
+    e.preventDefault();
+    camera.position.multiplyScalar(e.deltaY>0?1.08:0.92);
+  },{passive:false});
+
+  let animId;
+  function animate(){
+    animId = requestAnimationFrame(animate);
+    mesh.rotation.y = rotY;
+    mesh.rotation.x = rotX;
+    gridH.rotation.y = rotY;
+    gridH.rotation.x = rotX;
+    renderer.render(scene, camera);
+  }
+  animate();
+  ctx3d[containerId] = {renderer, animId};
+}
+
+// Helper: crea sprite di testo per etichette assi
+function makeTextSprite(text, position, scene, color='#333333') {
+  const canvas = document.createElement('canvas');
+  canvas.width=128; canvas.height=48;
+  const ctx = canvas.getContext('2d');
+  ctx.font = 'bold 22px Arial';
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.fillText(text, 64, 32);
+  const tex = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({map:tex, transparent:true});
+  const sp  = new THREE.Sprite(mat);
+  sp.position.copy(position);
+  sp.scale.set(3.5, 1.2, 1);
+  scene.add(sp);
+}
+
+/* ==============================================
+   SLIDER — HANDLER PRINCIPALE
+============================================== */
+function onSliderChange() {
+  const pConsumoPct = parseFloat(document.getElementById('sl-consumo').value);
+  const pAutistiPct = parseFloat(document.getElementById('sl-autisti').value);
+  const pRatioPct   = parseFloat(document.getElementById('sl-ratio').value);
+
+  // Aggiorna label slider
+  const consumoVal = P.B44 * (1+pConsumoPct/100);
+  const autistiVal = P.B34 * (1+pAutistiPct/100);
+  const ratioVal   = P.B35 * (1+pRatioPct/100);
+
+  setSliderLabel('sv-consumo', consumoVal.toFixed(2)+' L/100km', 'sp-consumo', pConsumoPct);
+  setSliderLabel('sv-autisti', '€ '+Math.round(autistiVal).toLocaleString('it-IT'), 'sp-autisti', pAutistiPct);
+  setSliderLabel('sv-ratio',   ratioVal.toFixed(3), 'sp-ratio', pRatioPct);
+
+  // Calcola scenario
+  const scenP = Object.assign({}, P, {B44:consumoVal, B34:autistiVal, B35:ratioVal});
+  const scen  = calcWith(scenP);
+
+  // Aggiorna P&L e grafici 2D
+  updateUI(scen, BASE);
+  updateCharts(scen);
+
+  // Superfici 3D (debounced)
+  clearTimeout(onSliderChange._t);
+  onSliderChange._t = setTimeout(()=>{
+    buildSurface3D('c3d-ebitda', 'tt-ebitda', 'ebitda');
+    buildSurface3D('c3d-ebit',   'tt-ebit',   'ebit');
+  }, 300);
+}
+
+function setSliderLabel(valId, valText, badgeId, pct) {
+  document.getElementById(valId).textContent = valText;
+  const badge = document.getElementById(badgeId);
+  if(pct===0){ badge.textContent='Base'; badge.className='sens-pct sens-pct-zero'; }
+  else if(pct>0){ badge.textContent='+'+pct.toFixed(1)+'%'; badge.className='sens-pct sens-pct-pos'; }
+  else { badge.textContent=pct.toFixed(1)+'%'; badge.className='sens-pct sens-pct-neg'; }
+}
+
+// Doppio click = reset slider
+['sl-consumo','sl-autisti','sl-ratio'].forEach(id=>{
+  document.getElementById(id).addEventListener('dblclick', function(){ this.value=0; onSliderChange(); });
+});
+
+/* ==============================================
+   TOGGLE SEZIONI P&L
+============================================== */
+function togglePL(key) {
+  const det = document.getElementById('pd-'+key);
+  const dot = document.getElementById('dot-'+key);
+  const isOpen = det.classList.contains('open');
+  det.classList.toggle('open', !isOpen);
+  dot.classList.toggle('open', !isOpen);
+  dot.textContent = isOpen ? '+' : '×';
+}
+
+/* ==============================================
+   UI PARAMETRI
+============================================== */
+const PARAM_GROUPS = [
+  { title:'🚛 Flotta (Nr. Mezzi)', params:[
+    {key:'B6',label:'Autotreni di Proprietà'},{key:'B7',label:'Autotreni in Sub-vezione'},
+    {key:'B8',label:'Bilici di Proprietà'},{key:'B9',label:'Bilici in Sub-vezione'},
+    {key:'B10',label:'Motrici di Proprietà'},{key:'B11',label:'Motrici in Sub-vezione'}
+  ]},
+  { title:'💰 Costo Mezzi (€)', params:[
+    {key:'B17',label:'Costo Autotreno – trattore (€)'},{key:'B18',label:'Costo Bilico – trattore (€)'},
+    {key:'B19',label:'Costo Motrice 3 assi (€)'},{key:'B20',label:'Costo Rimorchio (€)'},{key:'B21',label:'Costo Semirimorchio (€)'}
+  ]},
+  { title:'📅 Vita Utile e Finanziamento', params:[
+    {key:'B22',label:'Vita utile Autotreni/Bilici (anni)'},{key:'B23',label:'Vita utile Semirimorchi (anni)'},
+    {key:'B24',label:'Valore residuo % a 6 anni'},{key:'B25',label:'Valore residuo % a 12 anni'},
+    {key:'B26',label:'Tasso finanziamento annuo'}
+  ]},
+  { title:'👤 Autisti e Carburante', params:[
+    {key:'B34',label:'Stipendio autisti (€/anno)',sensitivity:true},
+    {key:'B35',label:'Ratio autisti per mezzo',sensitivity:true},
+    {key:'B37',label:'Nr. autisti Carico Notturno'},
+    {key:'B42',label:'Km totali percorsi 2025'},
+    {key:'B43',label:'Fattore correzione Km'},
+    {key:'B44',label:'Consumo medio (L/100km)',sensitivity:true},
+    {key:'PREZZO_CARB',label:'Prezzo gasolio netto IVA (€/lt)'}
+  ]},
+  { title:'🛡️ Assicurazioni e Pedaggi', params:[
+    {key:'B54',label:'Assicurazione + tasse (€/mezzo/anno)'},
+    {key:'B55',label:'Pedaggi autostradali (€/km)'},{key:'B60',label:'Assicurazione merci (% Ricavi)'}
+  ]},
+  { title:'📦 Altri Costi Operativi', params:[
+    {key:'B57',label:'Lavaggi (€/mezzo/anno)'},{key:'B58',label:'Lubrificanti (€/mezzo/anno)'},
+    {key:'B61',label:'Turnover/recruiting (€/anno)'},{key:'B62',label:'Costi di struttura (% Ricavi)'}
+  ]},
+  { title:'📍 Fatturato per Sede (€)', params:[
+    {key:'B66',label:'BARI'},{key:'B67',label:'CREMONA'},{key:'B68',label:'CUNEO'},
+    {key:'B69',label:'OSPEDALETTO'},{key:'B70',label:'PADOVA'},{key:'B71',label:'PARMA'},{key:'B72',label:'QUINTO'}
+  ]}
+];
+
+function populateParamUI() {
+  const grid = document.getElementById('param-grid');
+  grid.innerHTML='';
+  PARAM_GROUPS.forEach(grp=>{
+    const div=document.createElement('div'); div.className='param-group';
+    let html=`<h3>${grp.title}</h3>`;
+    grp.params.forEach(pm=>{
+      const v=P[pm.key]!==undefined?P[pm.key]:0;
+      const badge=pm.sensitivity?'<span class="badge-sens">SENSITIVITY</span>':'';
+      const cls=pm.sensitivity?' si':'';
+      html+=`<div class="param-field"><label>${pm.label} ${badge}</label><input type="number" class="param-input-field${cls}" data-key="${pm.key}" value="${v}" step="any"></div>`;
+    });
+    div.innerHTML=html; grid.appendChild(div);
+  });
+}
+
+/* ==============================================
+   EXPORT CSV
+============================================== */
+function exportCSV() {
+  const pConsumoPct = parseFloat(document.getElementById('sl-consumo').value);
+  const pAutistiPct = parseFloat(document.getElementById('sl-autisti').value);
+  const pRatioPct   = parseFloat(document.getElementById('sl-ratio').value);
+  const consumoVal  = P.B44*(1+pConsumoPct/100);
+  const autistiVal  = P.B34*(1+pAutistiPct/100);
+  const ratioVal    = P.B35*(1+pRatioPct/100);
+  const scenP = Object.assign({}, P, {B44:consumoVal, B34:autistiVal, B35:ratioVal});
+  const s = calcWith(scenP);
+  const b = BASE;
+  const rows=[
+    ['Voce','Base (€)','Scenario (€)','Δ (€)'],
+    ['RICAVI TOTALI',b.fatturato,s.fatturato,s.fatturato-b.fatturato],
+    ['Costo Autisti',b.totAutisti,s.totAutisti,s.totAutisti-b.totAutisti],
+    ['Carburante + AdBlue',b.totCarb,s.totCarb,s.totCarb-b.totCarb],
+    ['Manutenzione e Gomme',b.totManu,s.totManu,s.totManu-b.totManu],
+    ['Assicurazioni+Pedaggi',b.totAssic,s.totAssic,s.totAssic-b.totAssic],
+    ['Altri Costi Operativi',b.totAltri,s.totAltri,s.totAltri-b.totAltri],
+    ['TOTALE COSTI OPERATIVI',b.totCostiOp,s.totCostiOp,s.totCostiOp-b.totCostiOp],
+    ['EBITDA',b.ebitda,s.ebitda,s.ebitda-b.ebitda],
+    ['Ammort.+Interessi',b.totAmmInt,s.totAmmInt,s.totAmmInt-b.totAmmInt],
+    ['EBIT',b.ebit,s.ebit,s.ebit-b.ebit],
+    ['','','',''],
+    ['--- PARAMETRI SCENARIO ---','','',''],
+    ['Consumo carburante',consumoVal.toFixed(3),'',''],
+    ['Costo autisti €',Math.round(autistiVal),'',''],
+    ['Ratio autisti/mezzo',ratioVal.toFixed(3),'',''],
+  ];
+  const csv=rows.map(r=>r.map(c=>`"${Math.round(c)==c?Math.round(c):c}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=`should_cost_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+/* ==============================================
+   TAB SWITCH
+============================================== */
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='modello') setTimeout(()=>{ updateCharts(calcWith(P)); }, 50);
+}
+
+/* ==============================================
+   INIT
+============================================== */
+window.addEventListener('load', ()=>{
+  loadParams();
+  populateParamUI();
+  BASE = calcWith(P);
+  onSliderChange(); // inizializza tutto con slider a 0
+  setTimeout(()=>{
+    buildSurface3D('c3d-ebitda','tt-ebitda','ebitda');
+    buildSurface3D('c3d-ebit',  'tt-ebit',  'ebit');
+  }, 400);
+});
+</script>
+</body>
+</html>
