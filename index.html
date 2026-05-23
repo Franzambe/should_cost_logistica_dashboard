@@ -110,7 +110,7 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .slrlbls{display:flex;justify-content:space-between;font-size:.54rem;color:var(--text3);}
 
 /* ── LAYOUT PRINCIPALE ── */
-.mgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start;}
+.mgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start;}
 
 /* ── PANEL ── */
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
@@ -166,6 +166,19 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .rebitn .plrlbl,.rebitn .plrs{color:var(--red);} .rebitn .plrbdg{background:rgba(231,76,60,.18);color:var(--red);}
 
 .dp{color:var(--green);} .dn{color:var(--red);} .dz{color:var(--text3);}
+
+/* ── Percentuale subtotale P&L ── */
+.plrs-pct{font-size:.55rem;color:var(--text2);font-weight:600;margin-top:1px;text-align:right;letter-spacing:.2px;}
+.plrs-pct.pg{color:var(--green);} .plrs-pct.pr{color:var(--red);}
+
+/* ── P&L TOOLTIP ── */
+.pl-tip{position:fixed;display:none;pointer-events:none;background:rgba(9,18,26,.97);border:1px solid rgba(242,169,0,.4);border-radius:9px;padding:12px 15px;font-size:.72rem;line-height:1.75;z-index:999;max-width:330px;box-shadow:0 6px 28px rgba(0,0,0,.7);}
+.pl-tip-title{font-size:.76rem;font-weight:700;color:var(--gold);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid rgba(242,169,0,.2);}
+.pl-tip-formula{font-family:var(--mono);font-size:.65rem;color:var(--blue);background:rgba(58,159,214,.09);padding:4px 8px;border-radius:4px;margin:5px 0;white-space:pre-wrap;}
+.pl-tip-body{color:var(--text2);font-size:.69rem;line-height:1.65;}
+.pl-tip-note{color:var(--text3);font-size:.62rem;margin-top:6px;font-style:italic;padding-top:5px;border-top:1px solid rgba(255,255,255,.06);}
+[data-tip]:not(.plsub){cursor:help;}
+.plsub[data-tip]{cursor:help;}
 
 /* ── PIE ── */
 .piewrap{position:relative;width:100%;padding:16px 14px 14px;}
@@ -389,93 +402,96 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
         <div class="plch d">Δ</div>
       </div>
       <!-- RICAVI -->
-      <div class="plres rricavi">
+      <div class="plres rricavi" data-tip="ricavi">
         <div class="plrlbl">▶ RICAVI TOTALI <span class="plrbdg">TOP LINE</span></div>
-        <div class="plrb" id="b-r">—</div><div class="plrs" id="s-r">—</div>
+        <div class="plrb" id="b-r">—</div>
+        <div style="text-align:right"><div class="plrs" id="s-r">—</div><div class="plrs-pct pg" id="pct-r">100%</div></div>
         <div class="plrcm" id="cm-r">—</div><div class="plrd dz" id="d-r">—</div>
       </div>
       <!-- AUTISTI -->
-      <div class="pltot" onclick="tsub('autisti')">
+      <div class="pltot" data-tip="autisti" onclick="tsub('autisti')">
         <div class="pltlbl"><span class="tg" id="tg-autisti">+</span>👤 Costo Autisti</div>
         <div class="pltb" id="b-a">—</div><div class="plts" id="s-a">—</div>
         <div class="pltcm" id="cm-a">—</div><div class="pltd dz" id="d-a">—</div>
       </div>
       <div class="plsg" id="sg-autisti">
-        <div class="plsub"><div class="plslbl">Costo lordo autisti totale</div><div class="plsb" id="b-a1">—</div><div class="plss" id="s-a1">—</div><div class="plscm" id="cm-a1">—</div><div class="plsd dz" id="d-a1">—</div></div>
-        <div class="plsub"><div class="plslbl">Nr. autisti calcolati</div><div class="plsb" id="b-a2">—</div><div class="plss" id="s-a2">—</div><div class="plscm">—</div><div class="plsd dz" id="d-a2">—</div></div>
+        <div class="plsub" data-tip="autisti-lordo"><div class="plslbl">Costo lordo autisti totale</div><div class="plsb" id="b-a1">—</div><div class="plss" id="s-a1">—</div><div class="plscm" id="cm-a1">—</div><div class="plsd dz" id="d-a1">—</div></div>
+        <div class="plsub" data-tip="autisti-nr"><div class="plslbl">Nr. autisti calcolati</div><div class="plsb" id="b-a2">—</div><div class="plss" id="s-a2">—</div><div class="plscm">—</div><div class="plsd dz" id="d-a2">—</div></div>
         <div class="plsub"><div class="plslbl">% su Ricavi</div><div class="plsb" id="b-a3">—</div><div class="plss" id="s-a3">—</div><div class="plscm">—</div><div class="plsd dz" id="d-a3">—</div></div>
       </div>
       <!-- CARBURANTE -->
-      <div class="pltot" onclick="tsub('carb')">
+      <div class="pltot" data-tip="carb" onclick="tsub('carb')">
         <div class="pltlbl"><span class="tg" id="tg-carb">+</span>⛽ Carburante + AdBlue</div>
         <div class="pltb" id="b-c">—</div><div class="plts" id="s-c">—</div>
         <div class="pltcm" id="cm-c">—</div><div class="pltd dz" id="d-c">—</div>
       </div>
       <div class="plsg" id="sg-carb">
-        <div class="plsub"><div class="plslbl">Carburante (gasolio)</div><div class="plsb" id="b-c1">—</div><div class="plss" id="s-c1">—</div><div class="plscm" id="cm-c1">—</div><div class="plsd dz" id="d-c1">—</div></div>
-        <div class="plsub"><div class="plslbl">AdBlue</div><div class="plsb" id="b-c2">—</div><div class="plss" id="s-c2">—</div><div class="plscm" id="cm-c2">—</div><div class="plsd dz" id="d-c2">—</div></div>
+        <div class="plsub" data-tip="gasolio"><div class="plslbl">Carburante (gasolio)</div><div class="plsb" id="b-c1">—</div><div class="plss" id="s-c1">—</div><div class="plscm" id="cm-c1">—</div><div class="plsd dz" id="d-c1">—</div></div>
+        <div class="plsub" data-tip="adblue"><div class="plslbl">AdBlue</div><div class="plsb" id="b-c2">—</div><div class="plss" id="s-c2">—</div><div class="plscm" id="cm-c2">—</div><div class="plsd dz" id="d-c2">—</div></div>
         <div class="plsub"><div class="plslbl">% su Ricavi</div><div class="plsb" id="b-c3">—</div><div class="plss" id="s-c3">—</div><div class="plscm">—</div><div class="plsd dz" id="d-c3">—</div></div>
       </div>
       <!-- MANUTENZIONE -->
-      <div class="pltot" onclick="tsub('manu')">
+      <div class="pltot" data-tip="manu" onclick="tsub('manu')">
         <div class="pltlbl"><span class="tg" id="tg-manu">+</span>🔧 Manutenzione e Gomme</div>
         <div class="pltb" id="b-m">—</div><div class="plts" id="s-m">—</div>
         <div class="pltcm" id="cm-m">—</div><div class="pltd dz" id="d-m">—</div>
       </div>
       <div class="plsg" id="sg-manu">
-        <div class="plsub"><div class="plslbl">Manutenzione Autotreni</div><div class="plsb" id="b-m1">—</div><div class="plss" id="s-m1">—</div><div class="plscm" id="cm-m1">—</div><div class="plsd dz" id="d-m1">—</div></div>
-        <div class="plsub"><div class="plslbl">Manutenzione Bilici</div><div class="plsb" id="b-m2">—</div><div class="plss" id="s-m2">—</div><div class="plscm" id="cm-m2">—</div><div class="plsd dz" id="d-m2">—</div></div>
-        <div class="plsub"><div class="plslbl">Gomme</div><div class="plsb" id="b-m3">—</div><div class="plss" id="s-m3">—</div><div class="plscm" id="cm-m3">—</div><div class="plsd dz" id="d-m3">—</div></div>
+        <div class="plsub" data-tip="manu-at"><div class="plslbl">Manutenzione Autotreni</div><div class="plsb" id="b-m1">—</div><div class="plss" id="s-m1">—</div><div class="plscm" id="cm-m1">—</div><div class="plsd dz" id="d-m1">—</div></div>
+        <div class="plsub" data-tip="manu-bl"><div class="plslbl">Manutenzione Bilici</div><div class="plsb" id="b-m2">—</div><div class="plss" id="s-m2">—</div><div class="plscm" id="cm-m2">—</div><div class="plsd dz" id="d-m2">—</div></div>
+        <div class="plsub" data-tip="gomme"><div class="plslbl">Gomme</div><div class="plsb" id="b-m3">—</div><div class="plss" id="s-m3">—</div><div class="plscm" id="cm-m3">—</div><div class="plsd dz" id="d-m3">—</div></div>
         <div class="plsub"><div class="plslbl">% su Ricavi</div><div class="plsb" id="b-m4">—</div><div class="plss" id="s-m4">—</div><div class="plscm">—</div><div class="plsd dz" id="d-m4">—</div></div>
       </div>
       <!-- ASSICURAZIONI -->
-      <div class="pltot" onclick="tsub('assic')">
+      <div class="pltot" data-tip="assic" onclick="tsub('assic')">
         <div class="pltlbl"><span class="tg" id="tg-assic">+</span>🛡️ Assicurazioni, Pedaggi, Tasse</div>
         <div class="pltb" id="b-as">—</div><div class="plts" id="s-as">—</div>
         <div class="pltcm" id="cm-as">—</div><div class="pltd dz" id="d-as">—</div>
       </div>
       <div class="plsg" id="sg-assic">
-        <div class="plsub"><div class="plslbl">Assicurazione + tasse</div><div class="plsb" id="b-as1">—</div><div class="plss" id="s-as1">—</div><div class="plscm" id="cm-as1">—</div><div class="plsd dz" id="d-as1">—</div></div>
-        <div class="plsub"><div class="plslbl">Pedaggi autostradali</div><div class="plsb" id="b-as2">—</div><div class="plss" id="s-as2">—</div><div class="plscm" id="cm-as2">—</div><div class="plsd dz" id="d-as2">—</div></div>
-        <div class="plsub"><div class="plslbl">Assicurazione merci</div><div class="plsb" id="b-as3">—</div><div class="plss" id="s-as3">—</div><div class="plscm" id="cm-as3">—</div><div class="plsd dz" id="d-as3">—</div></div>
+        <div class="plsub" data-tip="assic-base"><div class="plslbl">Assicurazione + tasse</div><div class="plsb" id="b-as1">—</div><div class="plss" id="s-as1">—</div><div class="plscm" id="cm-as1">—</div><div class="plsd dz" id="d-as1">—</div></div>
+        <div class="plsub" data-tip="pedaggi"><div class="plslbl">Pedaggi autostradali</div><div class="plsb" id="b-as2">—</div><div class="plss" id="s-as2">—</div><div class="plscm" id="cm-as2">—</div><div class="plsd dz" id="d-as2">—</div></div>
+        <div class="plsub" data-tip="assic-merci"><div class="plslbl">Assicurazione merci</div><div class="plsb" id="b-as3">—</div><div class="plss" id="s-as3">—</div><div class="plscm" id="cm-as3">—</div><div class="plsd dz" id="d-as3">—</div></div>
         <div class="plsub"><div class="plslbl">% su Ricavi</div><div class="plsb" id="b-as4">—</div><div class="plss" id="s-as4">—</div><div class="plscm">—</div><div class="plsd dz" id="d-as4">—</div></div>
       </div>
       <!-- ALTRI COSTI -->
-      <div class="pltot" onclick="tsub('altri')">
+      <div class="pltot" data-tip="altri" onclick="tsub('altri')">
         <div class="pltlbl"><span class="tg" id="tg-altri">+</span>📦 Altri Costi Operativi</div>
         <div class="pltb" id="b-o">—</div><div class="plts" id="s-o">—</div>
         <div class="pltcm" id="cm-o">—</div><div class="pltd dz" id="d-o">—</div>
       </div>
       <div class="plsg" id="sg-altri">
-        <div class="plsub"><div class="plslbl">Gestione flotta</div><div class="plsb" id="b-o1">—</div><div class="plss" id="s-o1">—</div><div class="plscm" id="cm-o1">—</div><div class="plsd dz" id="d-o1">—</div></div>
-        <div class="plsub"><div class="plslbl">Lavaggi</div><div class="plsb" id="b-o2">—</div><div class="plss" id="s-o2">—</div><div class="plscm" id="cm-o2">—</div><div class="plsd dz" id="d-o2">—</div></div>
-        <div class="plsub"><div class="plslbl">Lubrificanti</div><div class="plsb" id="b-o3">—</div><div class="plss" id="s-o3">—</div><div class="plscm" id="cm-o3">—</div><div class="plsd dz" id="d-o3">—</div></div>
-        <div class="plsub"><div class="plslbl">Carichino</div><div class="plsb" id="b-o4">—</div><div class="plss" id="s-o4">—</div><div class="plscm" id="cm-o4">—</div><div class="plsd dz" id="d-o4">—</div></div>
-        <div class="plsub"><div class="plslbl">Turnover / recruiting</div><div class="plsb" id="b-o5">—</div><div class="plss" id="s-o5">—</div><div class="plscm" id="cm-o5">—</div><div class="plsd dz" id="d-o5">—</div></div>
-        <div class="plsub"><div class="plslbl">Costi di struttura</div><div class="plsb" id="b-o6">—</div><div class="plss" id="s-o6">—</div><div class="plscm" id="cm-o6">—</div><div class="plsd dz" id="d-o6">—</div></div>
+        <div class="plsub" data-tip="gflotta"><div class="plslbl">Gestione flotta</div><div class="plsb" id="b-o1">—</div><div class="plss" id="s-o1">—</div><div class="plscm" id="cm-o1">—</div><div class="plsd dz" id="d-o1">—</div></div>
+        <div class="plsub" data-tip="lavaggi"><div class="plslbl">Lavaggi</div><div class="plsb" id="b-o2">—</div><div class="plss" id="s-o2">—</div><div class="plscm" id="cm-o2">—</div><div class="plsd dz" id="d-o2">—</div></div>
+        <div class="plsub" data-tip="lubrif"><div class="plslbl">Lubrificanti</div><div class="plsb" id="b-o3">—</div><div class="plss" id="s-o3">—</div><div class="plscm" id="cm-o3">—</div><div class="plsd dz" id="d-o3">—</div></div>
+        <div class="plsub" data-tip="carichino"><div class="plslbl">Carichino</div><div class="plsb" id="b-o4">—</div><div class="plss" id="s-o4">—</div><div class="plscm" id="cm-o4">—</div><div class="plsd dz" id="d-o4">—</div></div>
+        <div class="plsub" data-tip="turnover"><div class="plslbl">Turnover / recruiting</div><div class="plsb" id="b-o5">—</div><div class="plss" id="s-o5">—</div><div class="plscm" id="cm-o5">—</div><div class="plsd dz" id="d-o5">—</div></div>
+        <div class="plsub" data-tip="struttura"><div class="plslbl">Costi di struttura</div><div class="plsb" id="b-o6">—</div><div class="plss" id="s-o6">—</div><div class="plscm" id="cm-o6">—</div><div class="plsd dz" id="d-o6">—</div></div>
         <div class="plsub"><div class="plslbl">% su Ricavi</div><div class="plsb" id="b-o7">—</div><div class="plss" id="s-o7">—</div><div class="plscm">—</div><div class="plsd dz" id="d-o7">—</div></div>
       </div>
       <!-- EBITDA -->
-      <div class="plres rebitda" style="margin-top:3px;">
+      <div class="plres rebitda" data-tip="ebitda" style="margin-top:3px;">
         <div class="plrlbl">▶ EBITDA <span class="plrbdg">MARGINE OPERATIVO</span></div>
-        <div class="plrb" id="b-eb">—</div><div class="plrs" id="s-eb">—</div>
+        <div class="plrb" id="b-eb">—</div>
+        <div style="text-align:right"><div class="plrs" id="s-eb">—</div><div class="plrs-pct pg" id="pct-eb">—</div></div>
         <div class="plrcm" id="cm-eb">—</div><div class="plrd dz" id="d-eb">—</div>
       </div>
       <!-- AMMORTAMENTI -->
-      <div class="pltot" onclick="tsub('ammort')">
+      <div class="pltot" data-tip="ammort" onclick="tsub('ammort')">
         <div class="pltlbl"><span class="tg" id="tg-ammort">+</span>📉 Ammortamenti + Interessi</div>
         <div class="pltb" id="b-am">—</div><div class="plts" id="s-am">—</div>
         <div class="pltcm" id="cm-am">—</div><div class="pltd dz" id="d-am">—</div>
       </div>
       <div class="plsg" id="sg-ammort">
-        <div class="plsub"><div class="plslbl">Ammort. Autotreni</div><div class="plsb" id="b-am1">—</div><div class="plss" id="s-am1">—</div><div class="plscm" id="cm-am1">—</div><div class="plsd dz" id="d-am1">—</div></div>
-        <div class="plsub"><div class="plslbl">Ammort. Bilici</div><div class="plsb" id="b-am2">—</div><div class="plss" id="s-am2">—</div><div class="plscm" id="cm-am2">—</div><div class="plsd dz" id="d-am2">—</div></div>
-        <div class="plsub"><div class="plslbl">Interessi finanziamento</div><div class="plsb" id="b-am3">—</div><div class="plss" id="s-am3">—</div><div class="plscm" id="cm-am3">—</div><div class="plsd dz" id="d-am3">—</div></div>
+        <div class="plsub" data-tip="ammort-at"><div class="plslbl">Ammort. Autotreni</div><div class="plsb" id="b-am1">—</div><div class="plss" id="s-am1">—</div><div class="plscm" id="cm-am1">—</div><div class="plsd dz" id="d-am1">—</div></div>
+        <div class="plsub" data-tip="ammort-bl"><div class="plslbl">Ammort. Bilici</div><div class="plsb" id="b-am2">—</div><div class="plss" id="s-am2">—</div><div class="plscm" id="cm-am2">—</div><div class="plsd dz" id="d-am2">—</div></div>
+        <div class="plsub" data-tip="interessi"><div class="plslbl">Interessi finanziamento</div><div class="plsb" id="b-am3">—</div><div class="plss" id="s-am3">—</div><div class="plscm" id="cm-am3">—</div><div class="plsd dz" id="d-am3">—</div></div>
       </div>
       <!-- EBIT -->
-      <div class="plres" id="ebit-row" style="margin-top:3px;">
+      <div class="plres" id="ebit-row" data-tip="ebit" style="margin-top:3px;">
         <div class="plrlbl" id="ebit-lbl">▶ EBIT <span class="plrbdg" id="ebit-bdg">RISULTATO OPERATIVO</span></div>
-        <div class="plrb" id="b-it">—</div><div class="plrs" id="s-it">—</div>
+        <div class="plrb" id="b-it">—</div>
+        <div style="text-align:right"><div class="plrs" id="s-it">—</div><div class="plrs-pct" id="pct-it">—</div></div>
         <div class="plrcm" id="cm-it">—</div><div class="plrd dz" id="d-it">—</div>
       </div>
     </div><!-- fine P&L -->
@@ -555,42 +571,101 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 <!-- ══ TAB GUIDA ══ -->
 <div id="tab-guida" class="tab">
   <div class="gwrap">
-    <h1>📖 Guida all'Utilizzo</h1>
-    <h2>Selettore di Sede</h2>
-    <p>La barra <strong>Sede</strong> sotto i tab permette di filtrare tutto il P&L per una singola sede logistica. <strong>TOTALE</strong> mostra il consolidato di tutte e 7 le sedi. Ogni selezione aggiorna KPI, P&L, grafico a torta e slider di sensitività.</p>
-    <div class="infobox">Quando si cambia sede gli slider tornano automaticamente a zero (Scenario Base) per garantire un confronto pulito.</div>
-    <h2>Tab Confronto Sedi</h2>
-    <p>Tabella affiancata di tutte le 7 sedi con le metriche principali: Ricavi, Costi Operativi, EBITDA, EBIT, EBITDA%, EBIT%, €/Mezzo. Clicca un'intestazione di colonna per ordinare crescente/decrescente. Clicca il nome di una sede per navigare direttamente al suo P&L.</p>
-    <h2>Colonne del P&L</h2>
-    <p>Il conto economico mostra <strong>5 colonne</strong>: Voce · Base · Scenario · <strong>€/Mezzo</strong> (costo unitario per mezzo in flotta) · Δ (differenziale scenario vs base). Il Δ è calcolato su ogni riga incluse le sotto-voci.</p>
-    <div class="infobox">€/Mezzo = valore scenario ÷ numero mezzi in flotta gestita della sede. Utile per confrontare l'efficienza per veicolo tra sedi diverse.</div>
-    <h2>4 Driver di Sensitività</h2>
-    <ul>
-      <li><strong>Consumo Carburante</strong> ±10% rispetto al valore base della sede selezionata</li>
-      <li><strong>Costo Autisti</strong> ±10% rispetto al valore base</li>
-      <li><strong>Ratio Autisti/Mezzo</strong> ±10%</li>
-      <li><strong>Costo Manutenzioni</strong> ±10% (moltiplicatore su tutta la voce)</li>
-    </ul>
-    <div class="warnbox">Doppio click su uno slider = reset immediato. Quando si cambia sede gli slider si resettano automaticamente.</div>
-    <h2>Formule principali</h2>
+    <h1>📖 Guida al Modello Should Cost Logistica</h1>
+
+    <h2>🎯 Scopo del Modello</h2>
+    <p>Il dashboard calcola il <strong>costo teorico di should cost</strong> (costo che dovrebbe avere il servizio di trasporto) per le 7 sedi logistiche del Gruppo Veronesi. Consente al CEO e al management di confrontare il costo calcolato bottom-up con i prezzi di mercato e di identificare sedi con marginalità anomala.</p>
+    <div class="infobox">Il modello non è un P&L contabile: è uno strumento di analisi decisionale. I ricavi sono fissi (fonte Excel), i costi sono costruiti da assunzioni parametriche verificabili.</div>
+
+    <h2>🏭 Le 7 Sedi</h2>
+    <p>Le sedi hanno parametri operativi propri (flotta, km, fatturato, autisti carico notturno, turnover) derivati dal file Excel Veronesi 2025. I parametri globali (prezzi, tariffe, vita utile) sono condivisi e modificabili nel tab Parametri.</p>
     <table class="gtbl">
-      <tr><th>Voce</th><th>Formula</th></tr>
-      <tr><td>Costo Autisti</td><td>Flotta × Ratio × Stipendio_annuo</td></tr>
-      <tr><td>Carburante</td><td>Km_tot × (1+Fatt_corr) × (Consumo/100) × Prezzo</td></tr>
-      <tr><td>AdBlue</td><td>Km_eff × 1.5/100 × 0.6 €/lt</td></tr>
-      <tr><td>Manutenzione</td><td>0.0876 €/km × km_eff × quota_tipo × ManuFactor</td></tr>
-      <tr><td>Gomme</td><td>0.039 €/km × km_eff × ManuFactor</td></tr>
-      <tr><td>Gestione Flotta</td><td>⌈Flotta/25⌉ × 46.500 €</td></tr>
-      <tr><td>Carichino</td><td>Nr_autisti_CN × Stipendio × Ratio</td></tr>
-      <tr><td>€/Mezzo</td><td>Valore_voce ÷ Flotta_gestita</td></tr>
-      <tr><td>EBITDA</td><td>Ricavi − Σ Costi Operativi</td></tr>
-      <tr><td>EBIT</td><td>EBITDA − Ammortamenti − Interessi</td></tr>
+      <tr><th>Sede</th><th>Fatturato (€M)</th><th>Flotta</th><th>Km annui (M)</th></tr>
+      <tr><td>BARI</td><td>7.21</td><td>30</td><td>4.37</td></tr>
+      <tr><td>CREMONA</td><td>6.70</td><td>38</td><td>2.76</td></tr>
+      <tr><td>CUNEO</td><td>3.12</td><td>19</td><td>1.18</td></tr>
+      <tr><td>OSPEDALETTO</td><td>3.99</td><td>24</td><td>1.59</td></tr>
+      <tr><td>PADOVA</td><td>13.02</td><td>66</td><td>6.91</td></tr>
+      <tr><td>PARMA</td><td>3.62</td><td>20</td><td>1.50</td></tr>
+      <tr><td>QUINTO</td><td>3.68</td><td>20</td><td>1.37</td></tr>
+    </table>
+
+    <h2>📍 Selettore di Sede</h2>
+    <p>La barra <strong>Sede</strong> sotto i tab filtra tutto il modello per una singola sede. <strong>TOTALE</strong> mostra il consolidato aggregato. Ogni selezione aggiorna KPI, P&L, grafico a torta e slider. Quando si cambia sede gli slider tornano automaticamente a zero per garantire un confronto pulito.</p>
+
+    <h2>📊 Tab Confronto Sedi</h2>
+    <p>Tabella affiancata di tutte e 7 le sedi con: Ricavi, Flotta, Km, Costi Operativi, EBITDA, EBITDA%, EBIT, EBIT%, €/Mezzo (EBITDA per mezzo). Clicca l'intestazione di una colonna per ordinare crescente/decrescente. Clicca il nome di una sede per navigare direttamente al suo P&L.</p>
+    <div class="infobox">Usa il Confronto Sedi per identificare rapidamente le sedi outlier: quelle con EBITDA% significativamente diverso dalla media meritano un approfondimento sulle assunzioni.</div>
+
+    <h2>📋 Colonne del P&L</h2>
+    <p>Il conto economico mostra 5 colonne: <strong>Voce</strong> · <strong>Base</strong> (scenario a slider zero) · <strong>Scenario</strong> (con slider attivi) · <strong>€/Mezzo</strong> (costo unitario per mezzo in flotta) · <strong>Δ</strong> (differenziale scenario vs base). Clicca il "+" accanto a una voce per espandere le sotto-voci. Passa il mouse su qualsiasi riga per vedere la formula e le assunzioni sottostanti.</p>
+    <div class="infobox">€/Mezzo = valore scenario ÷ flotta totale della sede. Permette confronti equi tra sedi con parchi mezzi diversi.</div>
+
+    <h2>🎚️ 4 Driver di Sensitività</h2>
+    <p>Gli slider agiscono come moltiplicatori percentuali (±10%) sulle voci più volatili del costo operativo. Consentono di simulare scenari "what-if" senza modificare i parametri base.</p>
+    <table class="gtbl">
+      <tr><th>Driver</th><th>Voce impattata</th><th>Range</th></tr>
+      <tr><td>⛽ Consumo Carburante</td><td>Carburante + AdBlue</td><td>±10%</td></tr>
+      <tr><td>👤 Costo Autisti</td><td>Costo lordo autisti + Carichino</td><td>±10%</td></tr>
+      <tr><td>🔢 Ratio Autisti/Mezzo</td><td>Nr. autisti → costo totale</td><td>±10%</td></tr>
+      <tr><td>🔧 Costo Manutenzioni</td><td>Tutta la voce Manutenzione e Gomme</td><td>±10%</td></tr>
+    </table>
+    <div class="warnbox">Doppio click su uno slider = reset immediato a zero. La colonna Δ nel P&L mostra l'impatto in € di ogni modifica.</div>
+
+    <h2>🔢 Formule di Calcolo Dettagliate</h2>
+    <table class="gtbl">
+      <tr><th>Voce</th><th>Formula</th><th>Parametri chiave</th></tr>
+      <tr><td>Costo Autisti</td><td>B13 × B35 × B34</td><td>B34=62k€/anno, B35=1.1 ratio</td></tr>
+      <tr><td>Carburante</td><td>B42 × (1+B43) × (B44/100) × PC</td><td>B43=0.113, B44=33.3 L/100km, PC=1.131 €/lt</td></tr>
+      <tr><td>AdBlue</td><td>Km_eff × 0.015 × 0.60</td><td>1.5 lt/100km, 0.60 €/lt</td></tr>
+      <tr><td>Manutenzione AT</td><td>0.0876 × km_eff × (n_AT/B13) × ManuF</td><td>€/km benchmark settore</td></tr>
+      <tr><td>Manutenzione BL</td><td>0.0876 × km_eff × (n_BL/B13) × ManuF</td><td>€/km benchmark settore</td></tr>
+      <tr><td>Gomme</td><td>0.039 × km_eff × ManuF</td><td>vita media ~150k km</td></tr>
+      <tr><td>Assic.+Tasse</td><td>B54 × B13</td><td>B54=4.500 €/mezzo/anno</td></tr>
+      <tr><td>Pedaggi</td><td>B55 × B42</td><td>B55=0.12 €/km lordi</td></tr>
+      <tr><td>Assic. Merci</td><td>B60 × Fatturato</td><td>B60=0.126% ricavi</td></tr>
+      <tr><td>Gestione Flotta</td><td>⌈B13/25⌉ × 46.500</td><td>1 fleet mgr ogni 25 mezzi</td></tr>
+      <tr><td>Lavaggi</td><td>B57 × B13</td><td>B57=1.000 €/mezzo/anno</td></tr>
+      <tr><td>Lubrificanti</td><td>B58 × B13</td><td>B58=2.000 €/mezzo/anno</td></tr>
+      <tr><td>Carichino</td><td>B37 × B34 × B35</td><td>B37=autisti CN per sede</td></tr>
+      <tr><td>Turnover</td><td>Valore fisso per sede</td><td>Fonte Excel Veronesi</td></tr>
+      <tr><td>Struttura</td><td>B62 × Fatturato</td><td>B62=3% ricavi</td></tr>
+      <tr><td>Ammort. AT</td><td>n_AT × [(B17×(1−B24))/B22 + (B19+B20)×(1−B25)/B23]</td><td>6 anni vita, 30% residuo</td></tr>
+      <tr><td>Ammort. BL</td><td>n_BL × [(B18×(1−B24))/B22 + B21×(1−B25)/B23]</td><td>12 anni semi, 20% residuo</td></tr>
+      <tr><td>Interessi</td><td>(n_AT×(B17+B20) + n_BL×(B18+B21)) × B26</td><td>B26=3.5% annuo</td></tr>
+      <tr><td>EBITDA</td><td>Ricavi − Σ(Autisti+Carb+Manu+Assic+Altri)</td><td>—</td></tr>
+      <tr><td>EBIT</td><td>EBITDA − Ammort. − Interessi</td><td>—</td></tr>
+    </table>
+
+    <h2>📦 Struttura della Flotta</h2>
+    <p>La flotta è suddivisa in 6 categorie per ogni sede: <strong>Autotreni propri</strong> (B6), <strong>Autotreni sub-vezione</strong> (B7), <strong>Bilici propri</strong> (B8), <strong>Bilici sub-vezione</strong> (B9), <strong>Motrici proprie</strong> (B10), <strong>Motrici sub-vezione</strong> (B11). La flotta totale B13 = somma di tutti e 6 i tipi. La distinzione propri/subvezione è rilevante per ammortamenti e interessi (calcolati solo sui mezzi propri).</p>
+    <div class="warnbox">Assunzione semplificativa: il costo di manutenzione e carburante è calcolato sull'intera flotta (propri + sub-vezione), mentre ammortamenti e interessi solo sui mezzi propri.</div>
+
+    <h2>⚙️ Tab Parametri</h2>
+    <p>I parametri globali sono condivisi da tutte le sedi e modificabili dall'utente. I parametri marcati <span style="font-size:.7rem;background:rgba(242,169,0,.15);color:var(--gold);border:1px solid rgba(242,169,0,.3);border-radius:3px;padding:1px 5px;font-weight:700;">SENSITIVITY</span> sono quelli collegati agli slider. Dopo ogni modifica clicca <strong>Salva &amp; Ricalcola</strong> per aggiornare il modello. Usa <strong>Ripristina Default</strong> per tornare ai valori originali.</p>
+    <p>La tabella <strong>Dati Operativi per Sede</strong> in fondo al tab è in sola lettura: mostra i parametri specifici per sede derivati dall'Excel Veronesi 2025 (flotta, km, fatturato, carico notturno, turnover).</p>
+
+    <h2>📥 Esportazione</h2>
+    <p>Il pulsante <strong>CSV</strong> esporta il P&L completo dello scenario corrente per la sede selezionata. Il file include tutte le voci con Base, Scenario, €/Mezzo e Δ. Utile per analisi offline in Excel o per la documentazione delle assunzioni.</p>
+    <p>Il pulsante <strong>PDF</strong> stampa una versione ottimizzata del dashboard (slider e tab nascosti automaticamente).</p>
+
+    <h2>📌 Assunzioni Principali da Verificare</h2>
+    <table class="gtbl">
+      <tr><th>Assunzione</th><th>Valore corrente</th><th>Rischio di errore</th></tr>
+      <tr><td>Prezzo gasolio (PC)</td><td>1.131 €/lt</td><td>Alto — variabile mensile</td></tr>
+      <tr><td>Consumo medio</td><td>33.3 L/100km</td><td>Medio — dipende da percorsi</td></tr>
+      <tr><td>Ratio autisti/mezzo</td><td>1.1</td><td>Medio — varia per sede</td></tr>
+      <tr><td>Costo manutenzione</td><td>0.0876 €/km</td><td>Basso — benchmark settore</td></tr>
+      <tr><td>Pedaggi (€/km)</td><td>0.12 €/km</td><td>Medio — mix percorsi</td></tr>
+      <tr><td>Struttura (% ricavi)</td><td>3%</td><td>Alto — molto diverso per sede</td></tr>
+      <tr><td>Gestione flotta</td><td>46.500 €/manager</td><td>Basso — verificato con Veronesi</td></tr>
     </table>
   </div>
 </div>
 
 </div><!-- fine app -->
 <div id="_toast"></div>
+<div id="pl-tip" class="pl-tip"></div>
 
 <script>
 'use strict';
@@ -780,7 +855,7 @@ function updateUI(s,b){
 
   // ── P&L ──
   // RICAVI
-  si('b-r',fK(bf)); si('s-r',fK(f)+' (100%)'); si('cm-r',fCM(f,B13));
+  si('b-r',fK(bf)); si('s-r',fK(f)); si('pct-r','100%'); si('cm-r',fCM(f,B13));
   {const d=f-bf; si('d-r',fD(d)); sc('d-r','plrd '+dC(d,false));}
 
   // AUTISTI
@@ -821,7 +896,8 @@ function updateUI(s,b){
   set5pct('b-o7','s-o7','d-o7', b.tO,s.tO,bf,f);
 
   // EBITDA
-  si('b-eb',fK(b.ebitda)); si('s-eb',fK(s.ebitda)+' ('+fP(s.ebitda,f)+')');
+  si('b-eb',fK(b.ebitda)); si('s-eb',fK(s.ebitda));
+  si('pct-eb',fP(s.ebitda,f)); sc('pct-eb','plrs-pct '+(s.ebitda>=0?'pg':'pr'));
   si('cm-eb',fCM(s.ebitda,B13));
   {const d=s.ebitda-b.ebitda; si('d-eb',fD(d)); sc('d-eb','plrd '+dC(d,false));}
 
@@ -834,7 +910,8 @@ function updateUI(s,b){
   // EBIT
   gi('ebit-row').className='plres '+(s.ebit>=0?'rebitp':'rebitn');
   si('ebit-bdg',s.ebit>=0?'RISULTATO OPERATIVO':'RISULTATO NEGATIVO');
-  si('b-it',fK(b.ebit)); si('s-it',fK(s.ebit)+' ('+fP(s.ebit,f)+')');
+  si('b-it',fK(b.ebit)); si('s-it',fK(s.ebit));
+  si('pct-it',fP(s.ebit,f)); sc('pct-it','plrs-pct '+(s.ebit>=0?'pg':'pr'));
   si('cm-it',fCM(s.ebit,B13));
   {const d=s.ebit-b.ebit; si('d-it',fD(d)); sc('d-it','plrd '+dC(d,false));}
 }
@@ -1205,7 +1282,7 @@ function buildSedeDatiTbl(){
     {lbl:'Flotta totale',fn:d=>d.B6+d.B7+d.B8+d.B9+d.B10+d.B11,tot:true},
     {lbl:'Km annui',fn:d=>(d.B42/1e6).toFixed(2)+'M'},
     {lbl:'Fatturato (€M)',fn:d=>(d.fat/1e6).toFixed(2)+'M'},
-    {lbl:'Autisti CN',k:'B37'},
+    {lbl:'Carico Notturno (autisti)',k:'B37'},
     {lbl:'Turnover (€K)',fn:d=>Math.round(d.B61/1000)+'k'},
   ];
   let html=`<thead><tr><th>Parametro</th>${allKeys.map(k=>`<th>${k==='TOTALE'?'<span style="color:var(--gold)">TOTALE</span>':k}</th>`).join('')}</tr></thead><tbody>`;
@@ -1295,6 +1372,71 @@ function switchTab(id,btn){
 }
 
 /* ════════════════════════════
+   P&L TOOLTIP DEFINITIONS
+════════════════════════════ */
+const PL_TIPS={
+  ricavi:{title:'Ricavi Totali',formula:'Fonte: Excel Veronesi 2025 — dati reali per sede',body:'Fatturato annuale della sede. Valore fisso derivato dai dati operativi storici. Non è influenzato dagli slider né dai parametri globali.',note:'TOTALE = somma delle 7 sedi (€ 41.3M).'},
+  autisti:{title:'Costo Autisti',formula:'Flotta × Ratio autisti/mezzo × Stipendio annuo',body:'Comprende tutti i conducenti proporzionati alla flotta gestita. Il ratio 1.1 riflette la copertura di ferie, malattia e doppi turni. Non include il carichino notturno (voce separata).',note:'Slider "Costo Autisti" (+Stipendio) e "Ratio Autisti/Mezzo" agiscono su questa voce.'},
+  'autisti-lordo':{title:'Costo Lordo Autisti',formula:'B13 × B35 × B34\n= Flotta × Ratio × Stipendio_annuo',body:'Stipendio base B34 = 62.000 €/anno lordi. Ratio B35 = 1.1 autisti/mezzo. Il prodotto fornisce il costo totale del personale di guida.',note:''},
+  'autisti-nr':{title:'Nr. Autisti Calcolati',formula:'ROUND(Flotta × Ratio)',body:'Il numero di autisti effettivi è il risultato del rapporto flotta-ratio. Un ratio > 1 garantisce la copertura continua: ferie (30gg), malattia (5%), formazione obbligatoria.',note:''},
+  carb:{title:'Carburante + AdBlue',formula:'Gasolio: Km_lordi × (1+B43) × B44/100 × PC\nAdBlue: Km_eff × 0.015 × 0.60 €/lt',body:'Il carburante è tipicamente il 2° costo. Il fattore correzione B43=0.113 aggiusta per tratti a vuoto, manovre in area e deviazioni. AdBlue obbligatorio su tutti i mezzi EURO VI.',note:'Slider "Consumo Carburante" agisce su B44 (L/100km).'},
+  gasolio:{title:'Carburante (Gasolio)',formula:'Km_lordi × (1 + B43) × (B44 / 100) × PC',body:'B43 = fattore correzione km = 0.113 (+11.3% sui km netti). B44 = consumo base = 33.3 L/100km. PC = prezzo gasolio netto IVA = 1.131 €/lt. Km lordi = km per sede da Excel.',note:''},
+  adblue:{title:'AdBlue',formula:'Km_eff × 0.015 × 0.60 €/lt',body:'Consumo standard motori EURO VI: 1.5 lt ogni 100 km percorsi. Prezzo medio 2025: 0.60 €/lt. Incide per ~3-4% sul costo carburante totale.',note:'Formula corretta rispetto al modello Excel originale (era sottostimata del 40%).'},
+  manu:{title:'Manutenzione e Gomme',formula:'Manu: 0.0876 €/km × km_eff × (n_tipo / Flotta_tot)\nGomme: 0.039 €/km × km_eff',body:'Costo per km standard da benchmark di settore, ripartito tra Autotreni e Bilici in proporzione alla composizione flotta. Il ManuFactor (slider) scala tutte e tre le sotto-voci.',note:'Slider "Costo Manutenzioni" agisce come moltiplicatore globale su questa voce.'},
+  'manu-at':{title:'Manutenzione Autotreni',formula:'0.0876 €/km × km_eff × (n_Autotreni / Flotta_tot)',body:'n_Autotreni = Autotreni_prop + SubVezione + Motrici. Il costo 0.0876 €/km include tagli olio, filtri, freni, revisioni, riparazioni meccaniche ed elettriche standard.',note:''},
+  'manu-bl':{title:'Manutenzione Bilici',formula:'0.0876 €/km × km_eff × (n_Bilici / Flotta_tot)',body:'n_Bilici = Bilici_prop + Bilici_SubVezione. La manutenzione dei bilici include anche il semirimorchio: pianali, sponde, ancoraggi, luci.',note:''},
+  gomme:{title:'Gomme',formula:'0.039 €/km × km_effettivi × ManuFactor',body:'Costo complessivo pneumatici per tutta la flotta. Include sostituzione programmata (vita media ~150.000 km), riparazione, equilibratura e smaltimento. Calcolato sui km effettivi totali.',note:''},
+  assic:{title:'Assicurazioni, Pedaggi, Tasse',formula:'3 componenti: Assic+tasse + Pedaggi + Assic.Merci',body:'Voce eterogenea che aggrega costi obbligatori: RC + Kasko parziale per mezzo, pedaggi proporzionali ai km e polizza merci trasportate.',note:''},
+  'assic-base':{title:'Assicurazione + Tasse',formula:'B54 × Flotta_totale',body:'B54 = 4.500 €/mezzo/anno. Include: RC obbligatoria, Kasko parziale (cristalli, incendio), bollo annuale, tassa di immatricolazione/rinnovo e visita periodica.',note:''},
+  pedaggi:{title:'Pedaggi Autostradali',formula:'B55 × Km_lordi_sede\nB55 = 0.12 €/km',body:'Tariffa media ponderata sulla rete autostradale italiana. Applicata ai km lordi (senza fattore correzione B43) della sede.',note:'Assunzione: 0.12 €/km media pesata sui percorsi effettivi di ogni sede (fonte Excel Veronesi).'},
+  'assic-merci':{title:'Assicurazione Merci',formula:'B60 × Fatturato_sede\nB60 = 0.126% dei Ricavi',body:'Polizza CMR + assicurazione carico. Copre danni, furto e smarrimento della merce trasportata. Parametrizzata sul fatturato in assenza di dati per peso/valore merce.',note:''},
+  altri:{title:'Altri Costi Operativi',formula:'Gestione + Lavaggi + Lubrificanti + Carichino + Turnover + Struttura',body:'Aggrega 6 voci di costo minori ma significative. Spesso sottovalutate nelle analisi di should cost standard, rappresentano tipicamente il 5-10% dei ricavi.',note:'Clicca "+" per espandere e vedere il dettaglio.'},
+  gflotta:{title:'Gestione Flotta',formula:'⌈ Flotta / 25 ⌉ × 46.500 €/anno',body:'Un fleet manager gestisce in media 25 mezzi. Costo lordo aziendale 46.500 €/anno. La funzione ceiling (arrotondamento superiore) garantisce almeno un manager anche per flotte piccole.',note:'Assunzione chiave verificata con Veronesi: è un costo reale spesso omesso nei modelli di mercato.'},
+  lavaggi:{title:'Lavaggi',formula:'B57 × Flotta_totale\nB57 = 1.000 €/mezzo/anno',body:'Include lavaggi periodici del mezzo (settimanali per i mezzi che trasportano alimentari), pulizia cisterne/cassoni e costo acqua+detergenti.',note:''},
+  lubrif:{title:'Lubrificanti',formula:'B58 × Flotta_totale\nB58 = 2.000 €/mezzo/anno',body:'Include: olio motore (cambio ogni 100.000 km), olio cambio, differenziali, servosterzo. Costo medio su ciclo di sostituzione programmato.',note:''},
+  carichino:{title:'Carichino (Autisti Carico Notturno)',formula:'B37 × B34 × B35\n= Nr_CN × Stipendio × Ratio',body:'Gli autisti dedicati al carico notturno operano in turni separati. Il Nr. (B37) è specifico per sede e deriva dai dati Excel Veronesi. La formula usa lo stesso stipendio base degli altri autisti.',note:'B37 = Nr. autisti carico notturno per sede (campo rinominato da "Autisti CN").'},
+  turnover:{title:'Turnover / Recruiting',formula:'Valore fisso per sede — fonte Excel Veronesi 2025',body:'Costo annuo di selezione, formazione e onboarding stimato sui tassi di turnover storici per sede. Include: agenzia di selezione, formazione iniziale (CQC, ADR), periodo di affiancamento.',note:'Il turnover elevato è tipico del settore logistico: ~15-20% annuo.'},
+  struttura:{title:'Costi di Struttura',formula:'B62 × Fatturato_sede\nB62 = 3% dei Ricavi',body:'Include: affitti/canoni capannoni e area parcheggio, utenze (corrente, gas, acqua), personale amministrativo di sede, IT, telefonia e altri costi fissi overhead.',note:''},
+  ebitda:{title:'EBITDA — Margine Operativo',formula:'EBITDA = Ricavi − Σ Costi Operativi',body:'Earnings Before Interest, Taxes, Depreciation & Amortization. Misura la redditività operativa prima degli oneri finanziari e degli ammortamenti. È il KPI principale per confrontare l\'efficienza tra sedi con strutture di investimento diverse.',note:'Target benchmark logistica 3PL: EBITDA% 8-15%.'},
+  ammort:{title:'Ammortamenti + Interessi',formula:'Quota lineare: (Costo × (1−Residuo)) / Vita_utile\nInteressi: Tasso × Valore_acquisto',body:'Ammortamento lineare per tipo mezzo. Vita utile: 6 anni Autotreni/Bilici, 12 anni Semirimorchi. Valore residuo: 30% (6 anni), 20% (12 anni). Interessi calcolati sul valore iniziale al tasso B26=3.5%.',note:'Questa voce NON è influenzata dagli slider.'},
+  'ammort-at':{title:'Ammortamento Autotreni',formula:'(n_AT) × [(B17×(1−B24))/B22 + (B20+B19)×(1−B25)/B23]',body:'n_AT = Autotreni_prop + SubVez + Motrici. B17 = 135k (trattore), B20 = 80k (rimorchio), B19 = 65k (motrice). B22 = 6 anni vita utile, B24 = 30% residuo.',note:''},
+  'ammort-bl':{title:'Ammortamento Bilici',formula:'(n_BL) × [(B18×(1−B24))/B22 + B21×(1−B25)/B23]',body:'n_BL = Bilici_prop + Bilici_SubVez. B18 = 120k (trattore bilico), B21 = 120k (semirimorchio). B23 = 12 anni vita utile semirimorchio, B25 = 20% residuo.',note:''},
+  interessi:{title:'Interessi Finanziamento',formula:'(n_AT×(B17+B20) + n_BL×(B18+B21)) × B26\nB26 = 3.5% annuo',body:'Onere finanziario sui leasing/mutui per l\'acquisto dei mezzi. Calcolato sul valore iniziale di acquisto (trattore + rimorchio/semirimorchio) per ogni tipo. Include sia mezzi propri che subvezione capitalizzata.',note:''},
+  ebit:{title:'EBIT — Risultato Operativo',formula:'EBIT = EBITDA − Ammortamenti − Interessi',body:'Earnings Before Interest & Taxes (risultato ante imposte). Misura la capacità della sede di coprire i costi del capitale investito nei mezzi. Un EBIT positivo è il prerequisito minimo per la sostenibilità economica della sede.',note:'Un EBIT negativo indica che la sede non copre i costi del parco mezzi proprio.'}
+};
+
+/* ════════════════════════════
+   P&L TOOLTIP HANDLER
+════════════════════════════ */
+function initPLTooltip(){
+  const tip=gi('pl-tip'); if(!tip)return;
+  let _cur=null;
+  document.addEventListener('mouseover',e=>{
+    const row=e.target.closest('[data-tip]');
+    if(row===_cur)return;
+    _cur=row;
+    if(!row){tip.style.display='none';return;}
+    const t=PL_TIPS[row.dataset.tip];
+    if(!t){tip.style.display='none';return;}
+    tip.innerHTML=
+      `<div class="pl-tip-title">💡 ${t.title}</div>`+
+      `<div class="pl-tip-formula">${t.formula.replace(/\n/g,'<br>')}</div>`+
+      `<div class="pl-tip-body">${t.body}</div>`+
+      (t.note?`<div class="pl-tip-note">📌 ${t.note}</div>`:'');
+    tip.style.display='block';
+  });
+  document.addEventListener('mousemove',e=>{
+    if(tip.style.display==='none')return;
+    let x=e.clientX+18, y=e.clientY+14;
+    const w=tip.offsetWidth||330, h=tip.offsetHeight||150;
+    if(x+w>window.innerWidth-12) x=e.clientX-w-18;
+    if(y+h>window.innerHeight-12) y=e.clientY-h-14;
+    if(y<8)y=8;
+    tip.style.left=x+'px'; tip.style.top=y+'px';
+  });
+}
+
+/* ════════════════════════════
    INIT
 ════════════════════════════ */
 window.addEventListener('load',()=>{
@@ -1304,6 +1446,7 @@ window.addEventListener('load',()=>{
   BASE=calcWith(sp,1);
   onSl();
   initPieHover();
+  initPLTooltip();
   let _rto;
   window.addEventListener('resize',()=>{
     clearTimeout(_rto);
