@@ -60,6 +60,15 @@ body{font-family:var(--font);background:var(--bg0);color:var(--text1);min-height
 .tab.active{display:block;}
 @keyframes fu{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 
+/* ── SEDE BAR ── */
+.sede-bar{display:flex;gap:5px;padding:8px 24px;background:linear-gradient(90deg,var(--bg0),#0d1d2e);border-bottom:2px solid var(--border2);overflow-x:auto;align-items:center;}
+.sede-bar-lbl{font-size:.58rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;margin-right:4px;flex-shrink:0;}
+.sede-btn{padding:5px 13px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);border-radius:5px;font-size:.66rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;}
+.sede-btn:hover{background:var(--bg4);color:var(--text1);border-color:rgba(242,169,0,.4);}
+.sede-btn.active{background:var(--gold);color:var(--bg1);border-color:var(--gold);box-shadow:0 0 14px rgba(242,169,0,.35);}
+.sede-btn.sb-tot{border-color:rgba(242,169,0,.3);color:var(--gold);}
+.sede-btn.sb-tot.active{background:var(--gold);color:var(--bg1);}
+
 /* ── KPI CARDS ── */
 .kcrow{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:14px;}
 .kcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;position:relative;overflow:hidden;transition:border-color .2s;}
@@ -72,6 +81,7 @@ body{font-family:var(--font);background:var(--bg0);color:var(--text1);min-height
 .kcval{font-size:1.28rem;font-weight:800;line-height:1;}
 .kcpct{font-size:.68rem;font-weight:600;margin-top:3px;color:var(--text2);}
 .kcdelta{font-size:.62rem;margin-top:3px;}
+.kcsede{font-size:.58rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;margin-top:5px;padding-top:4px;border-top:1px solid rgba(242,169,0,.15);}
 
 /* ── SCENARIO NOTE ── */
 .snote{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:7px;font-size:.75rem;font-weight:600;margin-bottom:12px;border:1px solid;}
@@ -81,7 +91,7 @@ body{font-family:var(--font);background:var(--bg0);color:var(--text1);min-height
 .sn-base .sndot{background:var(--green);}
 .sn-live .sndot{background:var(--gold);animation:pulse 1.4s infinite;}
 
-/* ── 4 SLIDER COMPATTI (sopra il P&L) ── */
+/* ── 4 SLIDER COMPATTI ── */
 .slbar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;}
 .slitem{display:flex;flex-direction:column;gap:4px;}
 .slitem-top{display:flex;justify-content:space-between;align-items:center;}
@@ -108,7 +118,7 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .ptitle{font-size:.7rem;font-weight:700;color:var(--text1);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px;}
 .pico{width:19px;height:19px;border-radius:4px;background:var(--gold);color:var(--bg1);display:inline-flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;flex-shrink:0;}
 
-/* ── P&L TABLE — 5 COLONNE: voce | base | scenario | costo/mezzo | Δ ── */
+/* ── P&L TABLE — 5 COLONNE ── */
 .plcols{display:grid;grid-template-columns:1fr 96px 96px 78px 72px;gap:0;padding:5px 12px 5px 14px;background:var(--bg3);border-bottom:1px solid var(--border);}
 .plch{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
 .plch.v{color:var(--text3);}
@@ -117,19 +127,16 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .plch.cm{color:var(--gold);text-align:right;}
 .plch.d{color:var(--text2);text-align:right;padding-right:3px;}
 
-/* Riga macro */
 .pltot{display:grid;grid-template-columns:1fr 96px 96px 78px 72px;gap:0;padding:8px 12px 8px 14px;border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
 .pltot:hover{background:var(--bg4);}
 .pltlbl{font-size:.78rem;font-weight:700;color:var(--text1);display:flex;align-items:center;gap:5px;}
 .tg{width:14px;height:14px;border-radius:50%;background:var(--gold);color:var(--bg1);display:inline-flex;align-items:center;justify-content:center;font-size:.56rem;font-weight:800;flex-shrink:0;transition:transform .22s;user-select:none;}
 .tg.open{transform:rotate(45deg);}
-/* Celle valori macro */
 .pltb{font-size:.73rem;color:var(--text2);text-align:right;font-family:var(--mono);align-self:center;}
 .plts{font-size:.78rem;font-weight:700;color:var(--text1);text-align:right;font-family:var(--mono);align-self:center;}
 .pltcm{font-size:.7rem;color:var(--gold);text-align:right;font-family:var(--mono);align-self:center;}
 .pltd{font-size:.7rem;font-weight:700;text-align:right;font-family:var(--mono);padding-right:3px;align-self:center;}
 
-/* Sotto-voci */
 .plsg{overflow:hidden;max-height:0;transition:max-height .3s ease;}
 .plsg.open{max-height:600px;}
 .plsub{display:grid;grid-template-columns:1fr 96px 96px 78px 72px;gap:0;padding:5px 12px 5px 30px;border-bottom:1px solid rgba(30,51,71,.45);transition:background .15s;}
@@ -141,7 +148,6 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .plscm{font-size:.68rem;color:var(--gold);text-align:right;font-family:var(--mono);align-self:center;opacity:.85;}
 .plsd{font-size:.67rem;font-weight:600;text-align:right;font-family:var(--mono);padding-right:3px;align-self:center;}
 
-/* Righe risultato */
 .plres{display:grid;grid-template-columns:1fr 96px 96px 78px 72px;gap:0;padding:10px 12px 10px 14px;border-bottom:1px solid var(--border);}
 .plrlbl{font-size:.8rem;font-weight:800;display:flex;align-items:center;gap:6px;}
 .plrbdg{font-size:.56rem;font-weight:700;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.4px;}
@@ -150,7 +156,6 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .plrcm{font-size:.7rem;color:var(--gold);text-align:right;font-family:var(--mono);align-self:center;}
 .plrd{font-size:.74rem;font-weight:700;text-align:right;font-family:var(--mono);padding-right:3px;align-self:center;}
 
-/* Colori risultati */
 .rricavi{background:rgba(58,159,214,.06);}
 .rricavi .plrlbl,.rricavi .plrs{color:var(--blue);} .rricavi .plrbdg{background:rgba(58,159,214,.18);color:var(--blue);}
 .rebitda{background:rgba(46,204,113,.06);}
@@ -160,18 +165,42 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .rebitn{background:rgba(231,76,60,.06);}
 .rebitn .plrlbl,.rebitn .plrs{color:var(--red);} .rebitn .plrbdg{background:rgba(231,76,60,.18);color:var(--red);}
 
-/* Delta */
 .dp{color:var(--green);} .dn{color:var(--red);} .dz{color:var(--text3);}
 
-/* ── WATERFALL ── */
+/* ── PIE ── */
 .piewrap{position:relative;width:100%;padding:16px 14px 14px;}
 .pietip{position:absolute;display:none;pointer-events:none;background:rgba(9,18,26,.96);border:1px solid rgba(242,169,0,.35);border-radius:8px;padding:10px 14px;font-size:.74rem;line-height:1.8;z-index:20;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.55);}
 .pietip-key{color:var(--gold);font-weight:700;}
-/* Legenda torta */
 .pie-legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:0 14px 14px;}
 .pie-leg-item{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--text2);cursor:pointer;transition:color .18s;}
 .pie-leg-item:hover{color:var(--text1);}
 .pie-leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* ── CONFRONTO SEDI ── */
+.ctbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);}
+.ctbl{width:100%;border-collapse:collapse;font-size:.73rem;}
+.ctbl th{background:var(--bg3);color:var(--text2);padding:9px 11px;text-align:right;font-weight:700;font-size:.61rem;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;user-select:none;transition:color .15s;border-bottom:2px solid var(--border2);white-space:nowrap;}
+.ctbl th:first-child{text-align:left;padding-left:14px;min-width:120px;}
+.ctbl th:hover{color:var(--gold);}
+.ctbl th.sa::after{content:' ▲';color:var(--gold);font-size:.56rem;}
+.ctbl th.sd::after{content:' ▼';color:var(--gold);font-size:.56rem;}
+.ctbl td{padding:8px 11px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--mono);color:var(--text2);font-size:.72rem;}
+.ctbl td:first-child{text-align:left;font-weight:700;color:var(--text1);font-family:var(--font);padding-left:14px;cursor:pointer;}
+.ctbl td:first-child:hover{color:var(--gold);text-decoration:underline;}
+.ctbl tr:hover td{background:var(--bg4);}
+.ctbl tr.csel td{background:rgba(242,169,0,.05);}
+.ctbl tr.csel td:first-child{color:var(--gold);}
+.ctbl .cp{color:var(--green);font-weight:700;}
+.ctbl .cn{color:var(--red);font-weight:700;}
+.ctbl .cg{color:var(--gold);}
+.ctbl .cb{color:var(--blue);}
+.ctbl .tot-row td{background:rgba(242,169,0,.04);border-top:2px solid var(--border2);font-weight:700;}
+.ctbl .tot-row td:first-child{color:var(--gold);}
+.cmeta{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.cmeta-note{font-size:.7rem;color:var(--text3);}
+.cmeta-hint{font-size:.67rem;color:var(--text3);font-style:italic;}
+/* KPI sede badge */
+.kcsede{font-size:.58rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;margin-top:5px;padding-top:4px;border-top:1px solid rgba(242,169,0,.15);}
 
 /* ── PARAMETRI ── */
 .pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:18px;}
@@ -183,6 +212,15 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 .pf input{width:100%;padding:5px 8px;background:var(--bg0);border:1px solid var(--border2);border-radius:5px;font-size:.76rem;font-family:var(--mono);color:var(--text1);transition:border .18s;}
 .pf input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-glow);}
 .pf input.si{border-color:rgba(242,169,0,.35);background:rgba(242,169,0,.03);}
+/* Sede dati panel */
+.sede-dati-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;}
+.sdtbl{width:100%;border-collapse:collapse;font-size:.68rem;}
+.sdtbl th{background:var(--bg3);color:var(--text3);padding:6px 10px;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;text-align:right;border-bottom:1px solid var(--border2);}
+.sdtbl th:first-child{text-align:left;}
+.sdtbl td{padding:5px 10px;border-bottom:1px solid rgba(30,51,71,.4);text-align:right;font-family:var(--mono);color:var(--text2);}
+.sdtbl td:first-child{text-align:left;color:var(--text2);font-family:var(--font);}
+.sdtbl tr:nth-child(even) td{background:rgba(255,255,255,.015);}
+.sdtbl .sd-tot{font-weight:700;color:var(--gold);background:rgba(242,169,0,.04)!important;}
 
 /* ── BUTTONS ── */
 .btnrow{display:flex;gap:7px;flex-wrap:wrap;}
@@ -212,8 +250,8 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 
 /* RESPONSIVE */
 @media(max-width:1200px){.mgrid{grid-template-columns:1fr;}.pgrid{grid-template-columns:1fr;}.kcrow{grid-template-columns:repeat(3,1fr);}.slbar{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:750px){.hdr{grid-template-columns:1fr;padding:12px;gap:8px;}.kcrow{grid-template-columns:repeat(2,1fr);}.slbar{grid-template-columns:repeat(2,1fr);}.tab{padding:12px;}}
-@media print{.tabs,.slbar,.expbar,.hdract{display:none!important;}.tab{display:block!important;}}
+@media(max-width:750px){.hdr{grid-template-columns:1fr;padding:12px;gap:8px;}.kcrow{grid-template-columns:repeat(2,1fr);}.slbar{grid-template-columns:repeat(2,1fr);}.tab{padding:12px;}.sede-bar{padding:6px 12px;}}
+@media print{.tabs,.slbar,.expbar,.hdract,.sede-bar{display:none!important;}.tab{display:block!important;}}
 </style>
 </head>
 <body>
@@ -223,7 +261,7 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 <header class="hdr">
   <div class="hbrand">
     <div class="hico">🚛</div>
-    <div><h1>Should Cost Logistica</h1><p>Modello P&amp;L · Analisi di Sensitività · 2025</p></div>
+    <div><h1>Should Cost Logistica</h1><p>Modello P&amp;L · Multi-Sede · Analisi di Sensitività · 2025</p></div>
   </div>
   <div class="kpistrip">
     <div class="kpip acc"><div class="kpilbl">Ricavi</div><div class="kpival" id="h-r">—</div><div class="kpisub d">100%</div></div>
@@ -243,23 +281,67 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 <!-- ══ TABS ══ -->
 <nav class="tabs">
   <button class="tbtn active" onclick="switchTab('modello',this)">📈 Modello P&L</button>
+  <button class="tbtn" onclick="switchTab('confronto',this)">📊 Confronto Sedi</button>
   <button class="tbtn" onclick="switchTab('parametri',this)">⚙️ Parametri</button>
   <button class="tbtn" onclick="switchTab('guida',this)">📖 Guida</button>
 </nav>
+
+<!-- ══ SEDE SELECTOR BAR ══ -->
+<div class="sede-bar" id="sede-bar">
+  <span class="sede-bar-lbl">📍 Sede:</span>
+  <button class="sede-btn sb-tot active" data-sede="TOTALE" onclick="selectSede('TOTALE',this)">TOTALE</button>
+  <button class="sede-btn" data-sede="BARI" onclick="selectSede('BARI',this)">BARI</button>
+  <button class="sede-btn" data-sede="CREMONA" onclick="selectSede('CREMONA',this)">CREMONA</button>
+  <button class="sede-btn" data-sede="CUNEO" onclick="selectSede('CUNEO',this)">CUNEO</button>
+  <button class="sede-btn" data-sede="OSPEDALETTO" onclick="selectSede('OSPEDALETTO',this)">OSPEDALETTO</button>
+  <button class="sede-btn" data-sede="PADOVA" onclick="selectSede('PADOVA',this)">PADOVA</button>
+  <button class="sede-btn" data-sede="PARMA" onclick="selectSede('PARMA',this)">PARMA</button>
+  <button class="sede-btn" data-sede="QUINTO" onclick="selectSede('QUINTO',this)">QUINTO</button>
+</div>
 
 <!-- ══ TAB MODELLO ══ -->
 <div id="tab-modello" class="tab active">
 
   <!-- KPI CARDS -->
   <div class="kcrow">
-    <div class="kcard cb"><div class="kclbl">Ricavi Totali</div><div class="kcval" id="kc-r" style="color:var(--blue)">—</div><div class="kcpct">100%</div><div class="kcdelta" id="kc-rd"></div></div>
-    <div class="kcard cg"><div class="kclbl">Costi Operativi</div><div class="kcval" id="kc-co" style="color:var(--gold)">—</div><div class="kcpct" id="kc-cop">—</div><div class="kcdelta" id="kc-cod"></div></div>
-    <div class="kcard cgr"><div class="kclbl">EBITDA</div><div class="kcval" id="kc-e" style="color:var(--green)">—</div><div class="kcpct" id="kc-ep">—</div><div class="kcdelta" id="kc-ed"></div></div>
-    <div class="kcard cp"><div class="kclbl">Ammort.+Interessi</div><div class="kcval" id="kc-a" style="color:var(--purple)">—</div><div class="kcpct" id="kc-ap">—</div><div class="kcdelta" id="kc-ad"></div></div>
-    <div class="kcard" id="kc-ebit-card"><div class="kclbl">EBIT</div><div class="kcval" id="kc-i">—</div><div class="kcpct" id="kc-ip">—</div><div class="kcdelta" id="kc-id"></div></div>
+    <div class="kcard cb">
+      <div class="kclbl">Ricavi Totali</div>
+      <div class="kcval" id="kc-r" style="color:var(--blue)">—</div>
+      <div class="kcpct">100%</div>
+      <div class="kcdelta" id="kc-rd"></div>
+      <div class="kcsede" id="kcs-r">TOTALE</div>
+    </div>
+    <div class="kcard cg">
+      <div class="kclbl">Costi Operativi</div>
+      <div class="kcval" id="kc-co" style="color:var(--gold)">—</div>
+      <div class="kcpct" id="kc-cop">—</div>
+      <div class="kcdelta" id="kc-cod"></div>
+      <div class="kcsede" id="kcs-co">TOTALE</div>
+    </div>
+    <div class="kcard cgr">
+      <div class="kclbl">EBITDA</div>
+      <div class="kcval" id="kc-e" style="color:var(--green)">—</div>
+      <div class="kcpct" id="kc-ep">—</div>
+      <div class="kcdelta" id="kc-ed"></div>
+      <div class="kcsede" id="kcs-e">TOTALE</div>
+    </div>
+    <div class="kcard cp">
+      <div class="kclbl">Ammort.+Interessi</div>
+      <div class="kcval" id="kc-a" style="color:var(--purple)">—</div>
+      <div class="kcpct" id="kc-ap">—</div>
+      <div class="kcdelta" id="kc-ad"></div>
+      <div class="kcsede" id="kcs-a">TOTALE</div>
+    </div>
+    <div class="kcard" id="kc-ebit-card">
+      <div class="kclbl">EBIT</div>
+      <div class="kcval" id="kc-i">—</div>
+      <div class="kcpct" id="kc-ip">—</div>
+      <div class="kcdelta" id="kc-id"></div>
+      <div class="kcsede" id="kcs-i">TOTALE</div>
+    </div>
   </div>
 
-  <!-- ══ 4 SLIDER COMPATTI ══ -->
+  <!-- ══ 4 SLIDER ══ -->
   <div class="slbar">
     <div class="slitem">
       <div class="slitem-top"><span class="slitem-lbl">⛽ Consumo Carburante</span><button class="slrst" onclick="resetSl('sl-consumo')">↺ Reset</button></div>
@@ -290,13 +372,15 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
   <!-- SCENARIO NOTE -->
   <div id="snote" class="snote sn-base"><div class="sndot"></div><span id="sntext">Scenario Base — tutti gli slider sono a zero.</span></div>
 
-  <!-- MAIN GRID: P&L + WATERFALL -->
+  <!-- MAIN GRID: P&L + PIE -->
   <div class="mgrid">
 
     <!-- ══ P&L ══ -->
     <div class="panel">
-      <div class="phdr"><div class="ptitle"><span class="pico">P&L</span> Conto Economico Annuale</div></div>
-      <!-- INTESTAZIONE 5 COLONNE -->
+      <div class="phdr">
+        <div class="ptitle"><span class="pico">P&L</span> Conto Economico Annuale</div>
+        <span id="pl-sede-badge" style="font-size:.62rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;">TOTALE</span>
+      </div>
       <div class="plcols">
         <div class="plch v">Voce</div>
         <div class="plch b">Base</div>
@@ -421,38 +505,83 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
 
 </div><!-- fine tab-modello -->
 
+<!-- ══ TAB CONFRONTO SEDI ══ -->
+<div id="tab-confronto" class="tab">
+  <div class="cmeta">
+    <div>
+      <h2 style="font-size:.95rem;font-weight:700;color:var(--text1)">📊 Confronto tra Sedi — Scenario Base</h2>
+      <p class="cmeta-note" style="margin-top:3px;">Valori calcolati con parametri globali correnti, slider a zero. Clicca nome sede per navigare.</p>
+    </div>
+    <span class="cmeta-hint">↕ Clicca intestazione colonna per ordinare</span>
+  </div>
+  <div class="ctbl-wrap">
+    <table class="ctbl" id="ctbl">
+      <thead>
+        <tr>
+          <th onclick="sortCtbl(0)" id="cth0">Sede</th>
+          <th onclick="sortCtbl(1)" id="cth1">Ricavi</th>
+          <th onclick="sortCtbl(2)" id="cth2">Flotta</th>
+          <th onclick="sortCtbl(3)" id="cth3">Km (M)</th>
+          <th onclick="sortCtbl(4)" id="cth4">Costi Op.</th>
+          <th onclick="sortCtbl(5)" id="cth5">EBITDA</th>
+          <th onclick="sortCtbl(6)" id="cth6">EBITDA %</th>
+          <th onclick="sortCtbl(7)" id="cth7">EBIT</th>
+          <th onclick="sortCtbl(8)" id="cth8">EBIT %</th>
+          <th onclick="sortCtbl(9)" id="cth9">€/Mezzo</th>
+        </tr>
+      </thead>
+      <tbody id="ctbl-body"></tbody>
+    </table>
+  </div>
+</div><!-- fine tab-confronto -->
+
 <!-- ══ TAB PARAMETRI ══ -->
 <div id="tab-parametri" class="tab">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-    <div><h2 style="font-size:.95rem;font-weight:700;color:var(--text1)">⚙️ Parametri di Input</h2><p style="font-size:.72rem;color:var(--text2);margin-top:2px">I parametri <span class="bs">SENSITIVITY</span> sono collegati agli slider.</p></div>
+    <div><h2 style="font-size:.95rem;font-weight:700;color:var(--text1)">⚙️ Parametri Globali</h2><p style="font-size:.72rem;color:var(--text2);margin-top:2px">Parametri condivisi da tutte le sedi. I parametri <span class="bs">SENSITIVITY</span> sono collegati agli slider.</p></div>
     <div class="btnrow"><button class="btn btng" onclick="saveParams()">💾 Salva &amp; Ricalcola</button><button class="btn btnd" onclick="resetParams()">🔄 Ripristina Default</button></div>
   </div>
   <div class="pgrid" id="pgrid"></div>
+
+  <!-- DATI PER SEDE (read-only) -->
+  <div class="sede-dati-panel">
+    <div class="pghdr">📍 Dati Operativi per Sede (sola lettura — fonte: Excel Veronesi 2025)</div>
+    <div style="overflow-x:auto;">
+      <table class="sdtbl" id="sdtbl"></table>
+    </div>
+  </div>
 </div>
 
 <!-- ══ TAB GUIDA ══ -->
 <div id="tab-guida" class="tab">
   <div class="gwrap">
     <h1>📖 Guida all'Utilizzo</h1>
+    <h2>Selettore di Sede</h2>
+    <p>La barra <strong>Sede</strong> sotto i tab permette di filtrare tutto il P&L per una singola sede logistica. <strong>TOTALE</strong> mostra il consolidato di tutte e 7 le sedi. Ogni selezione aggiorna KPI, P&L, grafico a torta e slider di sensitività.</p>
+    <div class="infobox">Quando si cambia sede gli slider tornano automaticamente a zero (Scenario Base) per garantire un confronto pulito.</div>
+    <h2>Tab Confronto Sedi</h2>
+    <p>Tabella affiancata di tutte le 7 sedi con le metriche principali: Ricavi, Costi Operativi, EBITDA, EBIT, EBITDA%, EBIT%, €/Mezzo. Clicca un'intestazione di colonna per ordinare crescente/decrescente. Clicca il nome di una sede per navigare direttamente al suo P&L.</p>
     <h2>Colonne del P&L</h2>
     <p>Il conto economico mostra <strong>5 colonne</strong>: Voce · Base · Scenario · <strong>€/Mezzo</strong> (costo unitario per mezzo in flotta) · Δ (differenziale scenario vs base). Il Δ è calcolato su ogni riga incluse le sotto-voci.</p>
-    <div class="infobox">€/Mezzo = valore scenario ÷ numero mezzi in flotta gestita. Utile per confrontare l'efficienza per veicolo.</div>
+    <div class="infobox">€/Mezzo = valore scenario ÷ numero mezzi in flotta gestita della sede. Utile per confrontare l'efficienza per veicolo tra sedi diverse.</div>
     <h2>4 Driver di Sensitività</h2>
     <ul>
-      <li><strong>Consumo Carburante</strong> ±10% rispetto al valore base</li>
+      <li><strong>Consumo Carburante</strong> ±10% rispetto al valore base della sede selezionata</li>
       <li><strong>Costo Autisti</strong> ±10% rispetto al valore base</li>
       <li><strong>Ratio Autisti/Mezzo</strong> ±10%</li>
       <li><strong>Costo Manutenzioni</strong> ±10% (moltiplicatore su tutta la voce)</li>
     </ul>
-    <div class="warnbox">Doppio click su uno slider = reset immediato. Gli slider si trovano sopra il P&L per accesso rapido.</div>
-    <h2>Waterfall Chart</h2>
-    <p>Il grafico a cascata parte dai Ricavi e scende sottraendo ogni voce del P&L: Autisti → Carburante → Manutenzione → Assicurazioni → Altri Costi → EBITDA → Ammortamenti+Interessi → EBIT. Colori costi: sfumatura oro→rosso. Hover per i valori esatti.</p>
+    <div class="warnbox">Doppio click su uno slider = reset immediato. Quando si cambia sede gli slider si resettano automaticamente.</div>
     <h2>Formule principali</h2>
     <table class="gtbl">
       <tr><th>Voce</th><th>Formula</th></tr>
       <tr><td>Costo Autisti</td><td>Flotta × Ratio × Stipendio_annuo</td></tr>
       <tr><td>Carburante</td><td>Km_tot × (1+Fatt_corr) × (Consumo/100) × Prezzo</td></tr>
-      <tr><td>Manutenzione</td><td>€/km × km_eff × quota_tipo × ManuFactor</td></tr>
+      <tr><td>AdBlue</td><td>Km_eff × 1.5/100 × 0.6 €/lt</td></tr>
+      <tr><td>Manutenzione</td><td>0.0876 €/km × km_eff × quota_tipo × ManuFactor</td></tr>
+      <tr><td>Gomme</td><td>0.039 €/km × km_eff × ManuFactor</td></tr>
+      <tr><td>Gestione Flotta</td><td>⌈Flotta/25⌉ × 46.500 €</td></tr>
+      <tr><td>Carichino</td><td>Nr_autisti_CN × Stipendio × Ratio</td></tr>
       <tr><td>€/Mezzo</td><td>Valore_voce ÷ Flotta_gestita</td></tr>
       <tr><td>EBITDA</td><td>Ricavi − Σ Costi Operativi</td></tr>
       <tr><td>EBIT</td><td>EBITDA − Ammortamenti − Interessi</td></tr>
@@ -460,64 +589,115 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
   </div>
 </div>
 
-</div>
+</div><!-- fine app -->
 <div id="_toast"></div>
 
 <script>
 'use strict';
+
 /* ════════════════════════════
-   DEFAULTS — B34=62000 (modificato)
+   DATI PER SEDE (fonte: Excel Veronesi 2025)
+   B6=AT-Prop, B7=AT-SubVez, B8=BL-Prop, B9=BL-SubVez, B10=MOT-Prop, B11=MOT-SubVez
+   B42=Km annui, fat=Fatturato, B37=Autisti CN, B61=Turnover
+════════════════════════════ */
+const SEDI_DATI = {
+  TOTALE:      {label:'TOTALE',       B6:80,  B7:35, B8:88, B9:12, B10:1, B11:1, B42:19684242, fat:41339079.83, B37:13, B61:214061.40},
+  BARI:        {label:'BARI',         B6:2,   B7:24, B8:2,  B9:1,  B10:0, B11:1, B42:4374203,  fat:7210816.12,  B37:2,  B61:29593.74},
+  CREMONA:     {label:'CREMONA',      B6:8,   B7:4,  B8:15, B9:11, B10:0, B11:0, B42:2757298,  fat:6700222.73,  B37:3,  B61:37485.41},
+  CUNEO:       {label:'CUNEO',        B6:12,  B7:0,  B8:7,  B9:0,  B10:0, B11:0, B42:1181920,  fat:3118415.71,  B37:1,  B61:18742.70},
+  OSPEDALETTO: {label:'OSPEDALETTO',  B6:7,   B7:0,  B8:17, B9:0,  B10:0, B11:0, B42:1591641,  fat:3993786.43,  B37:1,  B61:23675.00},
+  PADOVA:      {label:'PADOVA',       B6:36,  B7:4,  B8:25, B9:0,  B10:1, B11:0, B42:6908872,  fat:13022234.59, B37:4,  B61:65106.23},
+  PARMA:       {label:'PARMA',        B6:8,   B7:0,  B8:12, B9:0,  B10:0, B11:0, B42:1497793,  fat:3615855.32,  B37:1,  B61:19729.16},
+  QUINTO:      {label:'QUINTO',       B6:7,   B7:3,  B8:10, B9:0,  B10:0, B11:0, B42:1372515,  fat:3677748.93,  B37:1,  B61:19729.16}
+};
+const SEDI_KEYS = ['BARI','CREMONA','CUNEO','OSPEDALETTO','PADOVA','PARMA','QUINTO'];
+
+/* ════════════════════════════
+   PARAMETRI GLOBALI DEFAULT
 ════════════════════════════ */
 const DEF={
-  B6:80,B7:35,B8:88,B9:12,B10:1,B11:1,
-  B17:135000,B18:120000,B19:65000,B20:80000,B21:120000,
-  B22:6,B23:12,B24:.3,B25:.2,B26:.035,
-  B34:62000,  // ← modificato da 69800 a 62000
-  B35:1.1,B37:13,
-  B42:19684242,B43:.113,B44:33.333333,PC:1.131298,
-  B54:4500,B55:.12,B57:1000,B58:2000,
-  B60:.00126,B61:214061.4,B62:.03,
-  B66:7210816.12,B67:6700222.73,B68:3118415.71,
-  B69:3993786.43,B70:13022234.59,B71:3615855.32,B72:3677748.93
+  B17:135000, B18:120000, B19:65000, B20:80000, B21:120000,
+  B22:6, B23:12, B24:.3, B25:.2, B26:.035,
+  B34:62000, B35:1.1,
+  B43:.113,
+  B44:33.333333, PC:1.131298,
+  B54:4500, B55:.12, B60:.00126,
+  B57:1000, B58:2000, B62:.03
 };
 let P={}, BASE={};
-function loadP(){ const s=localStorage.getItem('scl6'); P=s?JSON.parse(s):{...DEF}; }
+let currentSede='TOTALE';
+
+function loadP(){
+  const s=localStorage.getItem('scl7');
+  P=s?{...DEF,...JSON.parse(s)}:{...DEF};
+}
 function saveParams(){
   document.querySelectorAll('.pif').forEach(i=>{ P[i.dataset.k]=parseFloat(i.value)||0; });
-  localStorage.setItem('scl6',JSON.stringify(P));
+  localStorage.setItem('scl7',JSON.stringify(P));
   ['sl-consumo','sl-autisti','sl-ratio','sl-manu'].forEach(id=>gi(id).value=0);
-  BASE=calcWith(P,1); onSl(); toast('✅ Parametri salvati!');
+  const sp=getSedeP(currentSede);
+  BASE=calcWith(sp,1);
+  onSl();
+  buildConfronto();
+  toast('✅ Parametri salvati!');
 }
 function resetParams(){
   if(!confirm('Ripristinare i valori di default?'))return;
-  P={...DEF}; localStorage.removeItem('scl6');
+  P={...DEF};
+  localStorage.removeItem('scl7');
   ['sl-consumo','sl-autisti','sl-ratio','sl-manu'].forEach(id=>gi(id).value=0);
-  BASE=calcWith(P,1); populatePUI(); onSl(); toast('🔄 Ripristinati!');
+  const sp=getSedeP(currentSede);
+  BASE=calcWith(sp,1);
+  populatePUI();
+  onSl();
+  buildConfronto();
+  toast('🔄 Ripristinati!');
 }
 function toast(msg){ const t=gi('_toast'); t.textContent=msg; t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.opacity='0',2600); }
 
 /* ════════════════════════════
-   CALCOLO
+   MERGE PARAMETRI SEDE + GLOBALI
 ════════════════════════════ */
-function calcWith(p,mF=1){
+function getSedeP(key){
+  const sd=SEDI_DATI[key];
+  return {
+    ...P,
+    B6:sd.B6, B7:sd.B7, B8:sd.B8, B9:sd.B9, B10:sd.B10, B11:sd.B11,
+    B42:sd.B42,
+    _fat:sd.fat,
+    B37:sd.B37,
+    B61:sd.B61
+  };
+}
+
+/* ════════════════════════════
+   CALCOLO P&L
+════════════════════════════ */
+function calcWith(p, mF=1){
   const B13=p.B6+p.B7+p.B8+p.B9+p.B10+p.B11;
   const ammAM=p.B17*(1-p.B24)/p.B22+(p.B20+p.B19)*(1-p.B25)/p.B23;
   const ammBM=p.B18*(1-p.B24)/p.B22+p.B21*(1-p.B25)/p.B23;
   const intAM=(p.B17+p.B20)*p.B26, intBM=(p.B18+p.B21)*p.B26;
   const nrA=B13*p.B35, cA=nrA*p.B34;
   const kmE=p.B42*(1+p.B43);
-  const adblue=(kmE/100*1.5)*.3/1.22;
+  // AdBlue: 1.5lt/100km × 0.6€/lt (formula corretta da Excel)
+  const adblue=kmE*0.015*0.6;
   const carb=p.B42*(1+p.B43)*(p.B44/100)*p.PC;
   const nrAT=p.B6+p.B7+p.B11, nrBT=p.B8+p.B9;
-  const mA=.0876*kmE*(nrAT/B13)*mF;
-  const mB=.0876*kmE*(nrBT/B13)*mF;
-  const gm=(650/200000*12)*p.B42*(1+p.B43)*mF;
-  const fat=p.B66+p.B67+p.B68+p.B69+p.B70+p.B71+p.B72;
-  const aT=p.B54*B13, pd=p.B55*(p.B42+p.B43), aM=p.B60*fat;
-  const gF=(B13/25)*p.B34, lv=p.B57*B13, lb=p.B58*B13;
+  const mA=(B13>0?0.0876*kmE*(nrAT/B13):0)*mF;
+  const mB=(B13>0?0.0876*kmE*(nrBT/B13):0)*mF;
+  const gm=0.039*kmE*mF;
+  // Fatturato: usa _fat (per-sede) o somma default
+  const fat=p._fat!==undefined?p._fat:0;
+  const aT=p.B54*B13;
+  const pd=p.B55*p.B42;   // pedaggi su km lordi
+  const aM=p.B60*fat;
+  // Gestione flotta: ⌈flotta/25⌉ × 46500
+  const gF=(B13>0?Math.ceil(B13/25):0)*46500;
+  const lv=p.B57*B13, lb=p.B58*B13;
   const ca=p.B37*p.B34*p.B35;
-  const to=p.B61;         // turnover separato
-  const st=p.B62*fat;     // struttura separata
+  const to=p.B61;
+  const st=p.B62*fat;
   const tA=cA, tC=carb+adblue, tM=mA+mB+gm, tAs=aT+pd+aM;
   const tO=gF+lv+lb+ca+to+st;
   const tCop=tA+tC+tM+tAs+tO;
@@ -534,12 +714,11 @@ function calcWith(p,mF=1){
    FORMATTERS
 ════════════════════════════ */
 const fM=v=>(v/1e6).toFixed(2)+'M';
-const fK=v=>'€\u00a0'+Math.round(v).toLocaleString('it-IT');
+const fK=v=>'€ '+Math.round(v).toLocaleString('it-IT');
 const fP=(v,t)=>t?((v/t)*100).toFixed(1)+'%':'—';
-function fD(v){ if(Math.abs(v)<50)return'—'; return(v>0?'+':'-')+'€\u00a0'+Math.round(Math.abs(v)).toLocaleString('it-IT'); }
+function fD(v){ if(Math.abs(v)<50)return'—'; return(v>0?'+':'-')+'€ '+Math.round(Math.abs(v)).toLocaleString('it-IT'); }
 function dC(v,isCost){ if(Math.abs(v)<50)return'dz'; if(isCost)return v>0?'dn':'dp'; return v>0?'dp':'dn'; }
-// costo per mezzo
-const fCM=(v,B13)=>B13>0?'€\u00a0'+Math.round(v/B13).toLocaleString('it-IT'):'—';
+const fCM=(v,B13)=>B13>0?'€ '+Math.round(v/B13).toLocaleString('it-IT'):'—';
 
 /* ════════════════════════════
    DOM HELPERS
@@ -548,13 +727,12 @@ const gi=id=>document.getElementById(id);
 function si(id,v){ const e=gi(id); if(e)e.textContent=v; }
 function sc(id,cls){ const e=gi(id); if(e)e.className=cls; }
 
-// set 5 colonne: base, scenario, costo/mezzo, delta
-function set5(bId,sId,cmId,dId, bv,sv,B13, isCost){
+function set5(bId,sId,cmId,dId,bv,sv,B13,isCost){
   si(bId,fK(bv)); si(sId,fK(sv));
-  if(cmId) si(cmId,fCM(sv,B13));
+  if(cmId)si(cmId,fCM(sv,B13));
   const d=sv-bv; si(dId,fD(d)); sc(dId,dC(d,isCost));
 }
-function set5pct(bId,sId,dId, bv,sv,bt,st){
+function set5pct(bId,sId,dId,bv,sv,bt,st){
   si(bId,fP(bv,bt)); si(sId,fP(sv,st));
   const d=(sv/st-bv/bt)*100;
   si(dId,Math.abs(d)<.05?'—':(d>0?'+':'')+d.toFixed(1)+'pp');
@@ -565,14 +743,18 @@ function set5pct(bId,sId,dId, bv,sv,bt,st){
    UPDATE UI
 ════════════════════════════ */
 function updateUI(s,b){
-  const f=s.fat,bf=b.fat,B13=s.B13;
+  const f=s.fat, bf=b.fat, B13=s.B13;
   const live=Math.abs(s.ebitda-b.ebitda)>50;
+  const sedeLbl=SEDI_DATI[currentSede].label;
 
   // Badge header
   gi('sbadge').className='sbadge '+(live?'sb-live':'sb-base');
   si('stext',live?'Scenario Attivo':'Scenario Base');
   gi('snote').className='snote '+(live?'sn-live':'sn-base');
   si('sntext',live?'⚡ Scenario Attivo — colonna Δ mostra differenziale vs base.':'✅ Scenario Base — sposta gli slider per attivare l\'analisi.');
+
+  // Badge P&L header
+  si('pl-sede-badge',sedeLbl);
 
   // KPI strip
   si('h-r',fM(f)); si('h-e',fM(s.ebitda)); si('h-i',fM(s.ebit));
@@ -592,6 +774,9 @@ function updateUI(s,b){
   {const d=s.ebit-b.ebit; si('kc-id',d?fD(d)+' vs base':''); sc('kc-id','kcdelta '+(d>0?'dp':'dn'));}
   gi('kc-ebit-card').className='kcard '+(s.ebit>=0?'cgr':'cr');
   gi('kc-i').style.color=s.ebit>=0?'var(--green)':'var(--red)';
+
+  // Sede badge nei KPI
+  ['kcs-r','kcs-co','kcs-e','kcs-a','kcs-i'].forEach(id=>si(id,sedeLbl));
 
   // ── P&L ──
   // RICAVI
@@ -625,14 +810,14 @@ function updateUI(s,b){
   set5('b-as3','s-as3','cm-as3','d-as3', b.aM,s.aM,B13,true);
   set5pct('b-as4','s-as4','d-as4', b.tAs,s.tAs,bf,f);
 
-  // ALTRI (turnover e struttura separati)
+  // ALTRI
   set5('b-o','s-o','cm-o','d-o', b.tO,s.tO,B13,true);
   set5('b-o1','s-o1','cm-o1','d-o1', b.gF,s.gF,B13,true);
   set5('b-o2','s-o2','cm-o2','d-o2', b.lv,s.lv,B13,true);
   set5('b-o3','s-o3','cm-o3','d-o3', b.lb,s.lb,B13,true);
   set5('b-o4','s-o4','cm-o4','d-o4', b.ca,s.ca,B13,true);
-  set5('b-o5','s-o5','cm-o5','d-o5', b.to,s.to,B13,true);   // TURNOVER
-  set5('b-o6','s-o6','cm-o6','d-o6', b.st,s.st,B13,true);   // STRUTTURA
+  set5('b-o5','s-o5','cm-o5','d-o5', b.to,s.to,B13,true);
+  set5('b-o6','s-o6','cm-o6','d-o6', b.st,s.st,B13,true);
   set5pct('b-o7','s-o7','d-o7', b.tO,s.tO,bf,f);
 
   // EBITDA
@@ -655,12 +840,7 @@ function updateUI(s,b){
 }
 
 /* ════════════════════════════
-   PIE CHART — canvas + hover interattivo
-   Voci: Autisti · Carburante · Manutenzione ·
-         Assicurazioni · Altri Costi · Ammort.+Int.
-   Il total non appare nel pie (è il contenitore).
-   Hover: fetta si espande + tooltip con voce, importo,
-          %, €/mezzo. Label nome+% sempre visibili.
+   PIE CHART
 ════════════════════════════ */
 const PIE_DATA=[
   {key:'tA',  lbl:'Autisti',           clr:'#F2A900'},
@@ -684,32 +864,25 @@ function drawPie(s, hovIdx=-1){
   const ctx=canvas.getContext('2d');
   ctx.scale(DPR,DPR);
   ctx.clearRect(0,0,W,H);
-
   const vals=PIE_DATA.map(d=>Math.abs(s[d.key]||0));
   const tot=vals.reduce((a,b)=>a+b,0);
   if(!tot)return;
-
   const CX=W/2, CY=H/2-10;
   const R_BASE=Math.min(W,H)*0.36;
-  const R_HOV =R_BASE*1.08;    // fetta hover espansa
-  const R_INNER=R_BASE*0.46;   // foro centrale
-
+  const R_HOV=R_BASE*1.08;
+  const R_INNER=R_BASE*0.46;
   let angle=-Math.PI/2;
   _pieSegments=[];
-
   vals.forEach((val,i)=>{
     const sweep=(val/tot)*Math.PI*2;
     const isHov=(i===hovIdx);
     const R=isHov?R_HOV:R_BASE;
     const mid=angle+sweep/2;
-    // offset hover: la fetta si sposta leggermente verso l'esterno
     const ox=isHov?Math.cos(mid)*10:0;
     const oy=isHov?Math.sin(mid)*10:0;
     _pieSegments.push({start:angle,sweep,mid,cx:CX+ox,cy:CY+oy,R,R_INNER,val,i});
     angle+=sweep;
   });
-
-  // Disegna ombre delle fette hover PRIMA (sotto)
   _pieSegments.forEach(seg=>{
     if(seg.i!==hovIdx)return;
     ctx.save();
@@ -723,13 +896,9 @@ function drawPie(s, hovIdx=-1){
     ctx.fill();
     ctx.restore();
   });
-
-  // Disegna fette normali
   _pieSegments.forEach(seg=>{
     const clr=PIE_DATA[seg.i].clr;
     const isHov=(seg.i===hovIdx);
-
-    // Fill
     ctx.beginPath();
     ctx.moveTo(seg.cx,seg.cy);
     ctx.arc(seg.cx,seg.cy,seg.R,seg.start,seg.start+seg.sweep);
@@ -739,15 +908,11 @@ function drawPie(s, hovIdx=-1){
     grd.addColorStop(1,clr+(isHov?'dd':'88'));
     ctx.fillStyle=grd;
     ctx.fill();
-
-    // Bordo interno (foro)
     ctx.beginPath();
     ctx.arc(seg.cx,seg.cy,seg.R_INNER,seg.start,seg.start+seg.sweep);
     ctx.strokeStyle='rgba(10,20,28,.6)';
     ctx.lineWidth=2.5;
     ctx.stroke();
-
-    // Bordo esterno
     ctx.beginPath();
     ctx.moveTo(seg.cx,seg.cy);
     ctx.arc(seg.cx,seg.cy,seg.R,seg.start,seg.start+seg.sweep);
@@ -755,27 +920,21 @@ function drawPie(s, hovIdx=-1){
     ctx.strokeStyle='rgba(10,20,28,.8)';
     ctx.lineWidth=isHov?2:1.2;
     ctx.stroke();
-
-    // Label nome + % SEMPRE visibili (se fetta >3%)
     const pct=(seg.val/tot*100);
     if(pct>=3){
       const labelR=(seg.R+seg.R_INNER)/2;
       const lx=seg.cx+Math.cos(seg.mid)*labelR;
       const ly=seg.cy+Math.sin(seg.mid)*labelR;
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      // Nome
       ctx.font=(isHov?'bold 10':'bold 9')+'px Segoe UI,sans-serif';
       ctx.fillStyle=isHov?'#ffffff':'rgba(255,255,255,.88)';
       const shortLbl=PIE_DATA[seg.i].lbl.split('+')[0].replace('Assicurazioni','Assicur.').replace('Interessi','Int.');
       ctx.fillText(shortLbl,lx,ly-7);
-      // Percentuale
       ctx.font=(isHov?'bold 11':'bold 10')+'px Segoe UI,sans-serif';
       ctx.fillStyle=isHov?'#ffffff':'rgba(255,255,255,.95)';
       ctx.fillText(pct.toFixed(1)+'%',lx,ly+7);
     }
   });
-
-  // Foro centrale: mostra totale costi
   ctx.beginPath();
   ctx.arc(CX,CY,R_INNER-1,0,Math.PI*2);
   ctx.fillStyle=hovIdx>=0?'#0f1e2a':'#0a141c';
@@ -785,7 +944,6 @@ function drawPie(s, hovIdx=-1){
   ctx.strokeStyle='rgba(255,255,255,.05)';
   ctx.lineWidth=1;
   ctx.stroke();
-  // Testo centrale
   if(hovIdx>=0){
     const hd=PIE_DATA[hovIdx], hs=_pieSegments[hovIdx];
     ctx.textAlign='center'; ctx.textBaseline='middle';
@@ -831,7 +989,6 @@ function initPieHover(){
   const cv=gi('pieChart');
   const tip=gi('pieTip');
   if(!cv||!tip)return;
-
   function getHovIdx(mx,my){
     for(let i=0;i<_pieSegments.length;i++){
       const seg=_pieSegments[i];
@@ -839,22 +996,17 @@ function initPieHover(){
       const dist=Math.sqrt(dx*dx+dy*dy);
       if(dist<seg.R&&dist>seg.R_INNER){
         let a=Math.atan2(dy,dx);
-        // normalizza l'angolo nel range [start, start+sweep]
         let s=seg.start, e=seg.start+seg.sweep;
-        // gestisce wrap-around
         if(a<s-0.01) a+=Math.PI*2;
         if(a>=s&&a<=e) return i;
       }
     }
     return -1;
   }
-
   cv.addEventListener('mousemove',e=>{
     const rc=cv.getBoundingClientRect();
-    const scaleX=cv.offsetWidth/rc.width, scaleY=cv.offsetHeight/rc.height;
     const mx=(e.clientX-rc.left), my=(e.clientY-rc.top);
     const idx=getHovIdx(mx,my);
-
     if(idx>=0){
       if(idx!==_pieHov) drawPie(_pieS,idx);
       const d=PIE_DATA[idx], val=Math.abs(_pieS[d.key]||0);
@@ -878,6 +1030,20 @@ function initPieHover(){
 }
 
 /* ════════════════════════════
+   SEDE SELECTOR
+════════════════════════════ */
+function selectSede(key, btn){
+  currentSede=key;
+  document.querySelectorAll('.sede-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  // Reset sliders
+  ['sl-consumo','sl-autisti','sl-ratio','sl-manu'].forEach(id=>gi(id).value=0);
+  const sp=getSedeP(key);
+  BASE=calcWith(sp,1);
+  onSl();
+}
+
+/* ════════════════════════════
    SLIDER HANDLER
 ════════════════════════════ */
 function onSl(){
@@ -885,15 +1051,16 @@ function onSl(){
   const aPct=parseFloat(gi('sl-autisti').value);
   const rPct=parseFloat(gi('sl-ratio').value);
   const mPct=parseFloat(gi('sl-manu').value);
-  const cV=P.B44*(1+cPct/100), aV=P.B34*(1+aPct/100);
-  const rV=P.B35*(1+rPct/100), mF=1+mPct/100;
+  const sp=getSedeP(currentSede);
+  const cV=sp.B44*(1+cPct/100), aV=sp.B34*(1+aPct/100);
+  const rV=sp.B35*(1+rPct/100), mF=1+mPct/100;
 
   updSL('sv-consumo','sp-consumo','sl-consumo', cV.toFixed(2)+' L/100km', cPct);
-  updSL('sv-autisti','sp-autisti','sl-autisti', '€\u00a0'+Math.round(aV).toLocaleString('it-IT'), aPct);
+  updSL('sv-autisti','sp-autisti','sl-autisti', '€ '+Math.round(aV).toLocaleString('it-IT'), aPct);
   updSL('sv-ratio',  'sp-ratio',  'sl-ratio',  rV.toFixed(3), rPct);
   updSL('sv-manu',   'sp-manu',   'sl-manu',   fK(BASE.tM*mF), mPct);
 
-  const scen=calcWith({...P,B44:cV,B34:aV,B35:rV},mF);
+  const scen=calcWith({...sp,B44:cV,B34:aV,B35:rV},mF);
   updateUI(scen,BASE);
   drawPie(scen);
   buildPieLegend(scen);
@@ -906,7 +1073,6 @@ function updSL(valId,badgeId,slId,valTxt,pct){
   else if(pct>0){b.textContent='+'+pct.toFixed(1)+'%';b.className='slpb slpb-pos';}
   else{b.textContent=pct.toFixed(1)+'%';b.className='slpb slpb-neg';}
 }
-
 function resetSl(id){ gi(id).value=0; onSl(); }
 ['sl-consumo','sl-autisti','sl-ratio','sl-manu'].forEach(id=>{
   gi(id).addEventListener('dblclick',()=>resetSl(id));
@@ -922,17 +1088,95 @@ function tsub(k){
 }
 
 /* ════════════════════════════
+   CONFRONTO SEDI
+════════════════════════════ */
+let _ctblSort={col:-1,asc:true};
+
+function buildConfronto(){
+  // Calcola P&L base per ogni sede
+  const rows=SEDI_KEYS.map(key=>{
+    const sp=getSedeP(key);
+    const r=calcWith(sp,1);
+    const sd=SEDI_DATI[key];
+    return{
+      key,
+      label:sd.label,
+      fat:r.fat,
+      B13:r.B13,
+      km:sd.B42,
+      tCop:r.tCop,
+      ebitda:r.ebitda,
+      ebitdaPct:r.fat>0?r.ebitda/r.fat*100:0,
+      ebit:r.ebit,
+      ebitPct:r.fat>0?r.ebit/r.fat*100:0,
+      euMezzo:r.B13>0?r.ebitda/r.B13:0  // €/mezzo EBITDA per quick rank
+    };
+  });
+  // Totale row
+  const totSp=getSedeP('TOTALE');
+  const totR=calcWith(totSp,1);
+  const totRow={
+    key:'TOTALE', label:'TOTALE',
+    fat:totR.fat, B13:totR.B13, km:SEDI_DATI.TOTALE.B42,
+    tCop:totR.tCop,
+    ebitda:totR.ebitda, ebitdaPct:totR.fat>0?totR.ebitda/totR.fat*100:0,
+    ebit:totR.ebit, ebitPct:totR.fat>0?totR.ebit/totR.fat*100:0,
+    euMezzo:totR.B13>0?totR.ebitda/totR.B13:0
+  };
+  // Sort
+  const colKeys=[null,'fat','B13','km','tCop','ebitda','ebitdaPct','ebit','ebitPct','euMezzo'];
+  if(_ctblSort.col>0){
+    const ck=colKeys[_ctblSort.col];
+    rows.sort((a,b)=>_ctblSort.asc?(a[ck]-b[ck]):(b[ck]-a[ck]));
+  }
+  // Render header markers
+  document.querySelectorAll('.ctbl th').forEach((th,i)=>{
+    th.className=(_ctblSort.col===i)?(_ctblSort.asc?'sa':'sd'):'';
+  });
+  // Render rows
+  const tbody=gi('ctbl-body');
+  if(!tbody)return;
+  const mkEMPct=(v)=>v>=0?`<span class="cp">${v.toFixed(1)}%</span>`:`<span class="cn">${v.toFixed(1)}%</span>`;
+  const mkE=(v)=>v>=0?`<span class="cp">${fM(v)}</span>`:`<span class="cn">${fM(v)}</span>`;
+  tbody.innerHTML=[...rows,{...totRow,_tot:true}].map(r=>{
+    const isSel=r.key===currentSede;
+    const isTot=r._tot;
+    const trCls=(isTot?'tot-row ':'')+(isSel&&!isTot?'csel':'');
+    const nameCell=isTot
+      ?`<td>${r.label}</td>`
+      :`<td onclick="selectSede('${r.key}',document.querySelector('[data-sede=${r.key}]'));switchTab('modello',document.querySelector('.tbtn'))">${r.label}${isSel?' ◀':''}</td>`;
+    return`<tr class="${trCls}">
+      ${nameCell}
+      <td class="cb">${fM(r.fat)}</td>
+      <td>${r.B13}</td>
+      <td>${(r.km/1e6).toFixed(2)}</td>
+      <td>${fM(r.tCop)}</td>
+      ${isTot?`<td>${mkE(r.ebitda)}</td>`:`<td>${mkE(r.ebitda)}</td>`}
+      <td>${mkEMPct(r.ebitdaPct)}</td>
+      <td>${mkE(r.ebit)}</td>
+      <td>${mkEMPct(r.ebitPct)}</td>
+      <td class="cg">€ ${Math.round(r.euMezzo).toLocaleString('it-IT')}</td>
+    </tr>`;
+  }).join('');
+}
+
+function sortCtbl(col){
+  if(_ctblSort.col===col) _ctblSort.asc=!_ctblSort.asc;
+  else{_ctblSort.col=col; _ctblSort.asc=col===0;}
+  buildConfronto();
+}
+
+/* ════════════════════════════
    PARAMETRI UI
 ════════════════════════════ */
 const PGROUPS=[
-  {t:'🚛 Flotta',ps:[{k:'B6',l:'Autotreni Proprietà'},{k:'B7',l:'Autotreni Sub-vezione'},{k:'B8',l:'Bilici Proprietà'},{k:'B9',l:'Bilici Sub-vezione'},{k:'B10',l:'Motrici Proprietà'},{k:'B11',l:'Motrici Sub-vezione'}]},
   {t:'💰 Costo Mezzi (€)',ps:[{k:'B17',l:'Autotreno trattore'},{k:'B18',l:'Bilico trattore'},{k:'B19',l:'Motrice 3 assi'},{k:'B20',l:'Rimorchio Autotreno'},{k:'B21',l:'Semirimorchio'}]},
   {t:'📅 Vita Utile & Finanziamento',ps:[{k:'B22',l:'Vita utile Autotreni/Bilici (anni)'},{k:'B23',l:'Vita utile Semirimorchi (anni)'},{k:'B24',l:'Valore residuo 6 anni %'},{k:'B25',l:'Valore residuo 12 anni %'},{k:'B26',l:'Tasso finanziamento annuo'}]},
-  {t:'👤 Autisti & Carburante',ps:[{k:'B34',l:'Stipendio autisti (€/anno)',s:1},{k:'B35',l:'Ratio autisti/mezzo',s:1},{k:'B37',l:'Nr. autisti Carico Notturno'},{k:'B42',l:'Km totali 2025'},{k:'B43',l:'Fattore correzione Km'},{k:'B44',l:'Consumo medio (L/100km)',s:1},{k:'PC',l:'Prezzo gasolio netto IVA (€/lt)'}]},
-  {t:'🛡️ Assicurazioni & Pedaggi',ps:[{k:'B54',l:'Assic.+tasse (€/mezzo/anno)'},{k:'B55',l:'Pedaggi (€/km)'},{k:'B60',l:'Assic. merci (% Ricavi)'}]},
-  {t:'📦 Altri Costi',ps:[{k:'B57',l:'Lavaggi (€/mezzo/anno)'},{k:'B58',l:'Lubrificanti (€/mezzo/anno)'},{k:'B61',l:'Turnover/recruiting (€/anno)'},{k:'B62',l:'Struttura (% Ricavi)'}]},
-  {t:'📍 Fatturato per Sede (€)',ps:[{k:'B66',l:'BARI'},{k:'B67',l:'CREMONA'},{k:'B68',l:'CUNEO'},{k:'B69',l:'OSPEDALETTO'},{k:'B70',l:'PADOVA'},{k:'B71',l:'PARMA'},{k:'B72',l:'QUINTO'}]}
+  {t:'👤 Autisti & Carburante',ps:[{k:'B34',l:'Stipendio autisti (€/anno)',s:1},{k:'B35',l:'Ratio autisti/mezzo',s:1},{k:'B43',l:'Fattore correzione Km'},{k:'B44',l:'Consumo medio (L/100km)',s:1},{k:'PC',l:'Prezzo gasolio netto IVA (€/lt)'}]},
+  {t:'🛡️ Assicurazioni & Pedaggi',ps:[{k:'B54',l:'Assic.+tasse (€/mezzo/anno)'},{k:'B55',l:'Pedaggi (€/km lordo)'},{k:'B60',l:'Assic. merci (% Ricavi)'}]},
+  {t:'📦 Altri Costi Globali',ps:[{k:'B57',l:'Lavaggi (€/mezzo/anno)'},{k:'B58',l:'Lubrificanti (€/mezzo/anno)'},{k:'B62',l:'Struttura (% Ricavi)'}]}
 ];
+
 function populatePUI(){
   const g=gi('pgrid'); g.innerHTML='';
   PGROUPS.forEach(grp=>{
@@ -944,6 +1188,40 @@ function populatePUI(){
     });
     h+='</div>'; d.innerHTML=h; g.appendChild(d);
   });
+  // Tabella sedi read-only
+  buildSedeDatiTbl();
+}
+
+function buildSedeDatiTbl(){
+  const t=gi('sdtbl'); if(!t)return;
+  const allKeys=['BARI','CREMONA','CUNEO','OSPEDALETTO','PADOVA','PARMA','QUINTO','TOTALE'];
+  const rows=[
+    {lbl:'Autotreni Prop.',k:'B6'},
+    {lbl:'Autotreni Sub-vez.',k:'B7'},
+    {lbl:'Bilici Prop.',k:'B8'},
+    {lbl:'Bilici Sub-vez.',k:'B9'},
+    {lbl:'Motrici Prop.',k:'B10'},
+    {lbl:'Motrici Sub-vez.',k:'B11'},
+    {lbl:'Flotta totale',fn:d=>d.B6+d.B7+d.B8+d.B9+d.B10+d.B11,tot:true},
+    {lbl:'Km annui',fn:d=>(d.B42/1e6).toFixed(2)+'M'},
+    {lbl:'Fatturato (€M)',fn:d=>(d.fat/1e6).toFixed(2)+'M'},
+    {lbl:'Autisti CN',k:'B37'},
+    {lbl:'Turnover (€K)',fn:d=>Math.round(d.B61/1000)+'k'},
+  ];
+  let html=`<thead><tr><th>Parametro</th>${allKeys.map(k=>`<th>${k==='TOTALE'?'<span style="color:var(--gold)">TOTALE</span>':k}</th>`).join('')}</tr></thead><tbody>`;
+  rows.forEach(r=>{
+    const isTot=r.tot;
+    html+=`<tr${isTot?' class="sd-tot"':''}>`;
+    html+=`<td>${r.lbl}</td>`;
+    allKeys.forEach(k=>{
+      const d=SEDI_DATI[k];
+      const v=r.fn?r.fn(d):(d[r.k]!==undefined?d[r.k]:'—');
+      html+=`<td${k==='TOTALE'?' style="color:var(--gold);font-weight:700;"':''}>${v}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</tbody>';
+  t.innerHTML=html;
 }
 
 /* ════════════════════════════
@@ -952,9 +1230,11 @@ function populatePUI(){
 function exportCSV(){
   const cP=parseFloat(gi('sl-consumo').value), aP=parseFloat(gi('sl-autisti').value);
   const rP=parseFloat(gi('sl-ratio').value),   mP=parseFloat(gi('sl-manu').value);
-  const s=calcWith({...P,B44:P.B44*(1+cP/100),B34:P.B34*(1+aP/100),B35:P.B35*(1+rP/100)},1+mP/100);
+  const sp=getSedeP(currentSede);
+  const s=calcWith({...sp,B44:sp.B44*(1+cP/100),B34:sp.B34*(1+aP/100),B35:sp.B35*(1+rP/100)},1+mP/100);
   const b=BASE; const B13=s.B13;
   const rows=[
+    ['Sede',SEDI_DATI[currentSede].label,'','',''],
     ['Voce','Base (€)','Scenario (€)','€/Mezzo','Δ (€)'],
     ['RICAVI TOTALI',b.fat,s.fat,Math.round(s.fat/B13),s.fat-b.fat],
     ['Costo Autisti',b.tA,s.tA,Math.round(s.tA/B13),s.tA-b.tA],
@@ -981,17 +1261,12 @@ function exportCSV(){
     ['EBITDA',b.ebitda,s.ebitda,Math.round(s.ebitda/B13),s.ebitda-b.ebitda],
     ['Ammort+Interessi',b.tAI,s.tAI,Math.round(s.tAI/B13),s.tAI-b.tAI],
     ['EBIT',b.ebit,s.ebit,Math.round(s.ebit/B13),s.ebit-b.ebit],
-    ['','','','',''],
-    ['PARAMETRI SCENARIO','','','',''],
-    ['Consumo L/100km',P.B44*(1+cP/100),'','',''],
-    ['Costo autisti €',P.B34*(1+aP/100),'','',''],
-    ['Ratio autisti/mezzo',P.B35*(1+rP/100),'','',''],
-    ['Manu factor',1+mP/100,'','','']
   ];
   const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
-  a.download='should_cost_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='should_cost_'+SEDI_DATI[currentSede].label+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
 }
 
 /* ════════════════════════════
@@ -1000,26 +1275,46 @@ function exportCSV(){
 function switchTab(id,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
-  gi('tab-'+id).classList.add('active'); if(btn)btn.classList.add('active');
+  gi('tab-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  else{ // trova il tbtn giusto
+    document.querySelectorAll('.tbtn').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+    });
+  }
   if(id==='modello'){
     setTimeout(()=>{
-      const cP=parseFloat(gi('sl-consumo').value), aP=parseFloat(gi('sl-autisti').value);
-      const rP=parseFloat(gi('sl-ratio').value),   mP=parseFloat(gi('sl-manu').value);
-      const _sc=calcWith({...P,B44:P.B44*(1+cP/100),B34:P.B34*(1+aP/100),B35:P.B35*(1+rP/100)},1+mP/100); drawPie(_sc); buildPieLegend(_sc);
+      const cP=parseFloat(gi('sl-consumo').value),aP=parseFloat(gi('sl-autisti').value);
+      const rP=parseFloat(gi('sl-ratio').value),mP=parseFloat(gi('sl-manu').value);
+      const sp=getSedeP(currentSede);
+      const _sc=calcWith({...sp,B44:sp.B44*(1+cP/100),B34:sp.B34*(1+aP/100),B35:sp.B35*(1+rP/100)},1+mP/100);
+      drawPie(_sc); buildPieLegend(_sc);
     },60);
   }
+  if(id==='confronto') buildConfronto();
 }
 
 /* ════════════════════════════
    INIT
 ════════════════════════════ */
 window.addEventListener('load',()=>{
-  loadP(); populatePUI();
-  BASE=calcWith(P,1);
+  loadP();
+  populatePUI();
+  const sp=getSedeP('TOTALE');
+  BASE=calcWith(sp,1);
   onSl();
   initPieHover();
-  // Ridisegna waterfall al resize
-  let _rto; window.addEventListener('resize',()=>{ clearTimeout(_rto); _rto=setTimeout(()=>{ const cP=parseFloat(gi('sl-consumo').value),aP=parseFloat(gi('sl-autisti').value),rP=parseFloat(gi('sl-ratio').value),mP=parseFloat(gi('sl-manu').value); const _rsc=calcWith({...P,B44:P.B44*(1+cP/100),B34:P.B34*(1+aP/100),B35:P.B35*(1+rP/100)},1+mP/100); drawPie(_rsc); buildPieLegend(_rsc); },200); });
+  let _rto;
+  window.addEventListener('resize',()=>{
+    clearTimeout(_rto);
+    _rto=setTimeout(()=>{
+      const cP=parseFloat(gi('sl-consumo').value),aP=parseFloat(gi('sl-autisti').value);
+      const rP=parseFloat(gi('sl-ratio').value),mP=parseFloat(gi('sl-manu').value);
+      const sp=getSedeP(currentSede);
+      const _rsc=calcWith({...sp,B44:sp.B44*(1+cP/100),B34:sp.B34*(1+aP/100),B35:sp.B35*(1+rP/100)},1+mP/100);
+      drawPie(_rsc); buildPieLegend(_rsc);
+    },200);
+  });
 });
 </script>
 </body>
